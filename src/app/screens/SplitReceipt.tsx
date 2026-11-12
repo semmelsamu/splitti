@@ -350,13 +350,16 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
             >
               <div className="flex items-center gap-2">
                 {marked && (
-                  <input
-                    type="checkbox"
-                    checked={isMarked}
-                    onChange={() => toggleMarked(item.key)}
-                    aria-label={`${item.label} markieren`}
-                    className="h-6 w-6 shrink-0 accent-accent"
-                  />
+                  // The label gives the small box a touch target of 44 px.
+                  <label className="-ml-2.5 flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={isMarked}
+                      onChange={() => toggleMarked(item.key)}
+                      aria-label={`${item.label} markieren`}
+                      className="h-6 w-6 accent-accent"
+                    />
+                  </label>
                 )}
                 <div className="min-w-0 flex-1 font-medium">
                   {item.label}{' '}

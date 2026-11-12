@@ -85,3 +85,12 @@ Lücken im Plan, die beim Bauen entschieden wurden, jeweils mit Begründung. Der
 | 52 | Zahlungen löschen | Wie Belege nur über einen Zeitstempel; eine gelöschte Zahlung bleibt durchgestrichen sichtbar. Wiederherstellen gibt es nicht (im Plan nur für Belege); die Zahlung lässt sich neu eintragen. | Entspricht Schema (`deleted_at`) und API-Tabelle. |
 | 53 | „Als bezahlt eintragen“ | Trägt die vorgeschlagene Überweisung mit heutigem Datum ein. „Andere Zahlung eintragen“ erlaubt beliebige Personen, Beträge (auch Teilbeträge) und ein Datum. | Wireframe. |
 | 54 | Entfernte Mitglieder mit offenem Saldo | Bleiben in Salden („(entfernt)“) und in den Überweisungsvorschlägen sichtbar, bis sie ausgeglichen sind; für neue Einträge sind sie nicht wählbar. | Sonst gingen Schulden beim Auszug still verloren, und die Salden ergäben sichtbar nicht mehr null. |
+
+## PWA und Abschluss (Meilenstein 7)
+
+| Nr. | Frage | Entscheidung | Begründung |
+| --- | --- | --- | --- |
+| 55 | Was hält der Service Worker auf dem Gerät? | Nur die App-Hülle: die Seite selbst, Skripte, Stile, Icons, Manifest. Alles unter `/api/` geht immer zum Server. Seiten kommen bei Verbindung frisch vom Server, sonst aus dem Speicher. Jeder Build bekommt einen eigenen Speicher und räumt den alten weg. | Plan: „Service Worker für die App-Hülle, keine Offline-Erfassung“. Ohne Verbindung startet die App und sagt, dass der Server fehlt, statt alte Salden zu zeigen. |
+| 56 | Der erste Besuch lädt die Hülle, bevor der Service Worker zuständig ist. | Die Seite übergibt dem Service Worker nach dessen Start die Liste der Dateien, die sie geladen hat; er legt sie ab. | Schon nach dem ersten Besuch ist die Hülle vollständig auf dem Gerät, ohne dass eine Dateiliste im Build gepflegt werden muss. |
+| 57 | Icon und Manifest | Eigene Zeichnung (Kassenzettel mit zwei Mitglieder-Chips) in `scripts/generate-icons.mjs`, daraus 192 und 512 Pixel, eine „maskable“-Fassung und das Icon für iOS. Anzeige `standalone`, Hochformat, Farben aus den Wireframes. | Ein Skript statt handgepflegter Bilddateien; die Größen sind die, die Chrome und iOS für die Installation verlangen. |
+| 58 | Was heißt „Bedienung am Handy-Format“ prüfbar? | Ein Browser-Test geht alle Screens bei 390 × 844 und 360 × 640 durch und verlangt: kein seitliches Scrollen, jede Tippfläche mindestens 44 × 44 Pixel (wie in den Wireframes), Titel und Hauptaktion bleiben beim Scrollen sichtbar. | Macht die Abnahme automatisch; der Test hat zwei zu schmale Tippflächen gefunden, die behoben sind. |

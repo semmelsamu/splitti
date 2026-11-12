@@ -54,6 +54,7 @@ Voraussetzungen für Entwicklung und Tests: Node.js ab 22.23 (im Container läuf
 | Build starten (Migrationen laufen zuerst) | `npm start` |
 | Neue Migration aus `src/server/db/schema.ts` erzeugen | `npm run db:generate -- --name <name>` |
 | Texterkennung an den drei Testfotos laufen lassen und `docs/OCR-BERICHT.md` schreiben | `npm run ocr:report` |
+| App-Icons aus der Zeichnung in `scripts/generate-icons.mjs` neu erzeugen | `npm run icons` |
 | Container bauen und starten | `docker compose up -d --build` |
 
 Hinweise:

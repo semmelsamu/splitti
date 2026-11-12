@@ -43,8 +43,9 @@ const FIXTURES: Fixture[] = [
       'Iglo Brokkoli': MARKER,
       'Rotbusch Sahne-Ka.': MARKER,
       'Maultaschen vegan': MARKER,
-      'Kartoffeln 2,5kg': MARKER,
+      'Kartoffeln 2,5kg': `${MARKER}. Vorlage weicht vom Foto ab: Das Foto zeigt „2,5Kg“`,
       'Kveg. Tofu Natur': MARKER,
+      'Gelbstecker 10 st.': 'Vorlage weicht vom Foto ab: Das Foto zeigt „10 St.“',
     },
   },
   {

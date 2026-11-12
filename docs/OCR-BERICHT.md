@@ -79,9 +79,9 @@ Foto: `tests/fixtures/receipts/kaufland-b.png` – sieben Preise mit orangem Tex
 | KVeg.No Milk | 0,95 | KVeg.No Milk | 0,95 | stimmt |  |
 | Rotbusch Sahne-Ka. | 2,49 | Rotbusch Sahne-Ka. | 2,49 | stimmt | Preis auf dem Foto mit Textmarker übermalt |
 | Maultaschen vegan | 2,29 | Maultaschen vegan | 2,29 | stimmt | Preis auf dem Foto mit Textmarker übermalt |
-| Kartoffeln 2,5kg | 3,79 | Kartoffeln 2,5Kg | 3,79 | Betrag stimmt, Bezeichnung weicht ab | Preis auf dem Foto mit Textmarker übermalt |
+| Kartoffeln 2,5kg | 3,79 | Kartoffeln 2,5Kg | 3,79 | Betrag stimmt, Bezeichnung weicht ab | Preis auf dem Foto mit Textmarker übermalt. Vorlage weicht vom Foto ab: Das Foto zeigt „2,5Kg“ |
 | Kveg. Tofu Natur | 2,29 | Kveg. Tofu Natur | 2,29 | stimmt | Preis auf dem Foto mit Textmarker übermalt |
-| Gelbstecker 10 st. | 5,79 | Gelbstecker 10 St. | 5,79 | Betrag stimmt, Bezeichnung weicht ab |  |
+| Gelbstecker 10 st. | 5,79 | Gelbstecker 10 St. | 5,79 | Betrag stimmt, Bezeichnung weicht ab | Vorlage weicht vom Foto ab: Das Foto zeigt „10 St.“ |
 
 - Summe der erkannten Positionen: 30,22; erkannte Zettelsumme: 30,22.
 - Steuertabelle (Brutto): A 10,20 (erwartet 10,20), B 20,02 (erwartet 20,02); Abgleich mit den Positionen: nicht prüfbar.

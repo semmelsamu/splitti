@@ -132,7 +132,7 @@ export function Button({
   type = 'button',
   ...rest
 }: ButtonProps) {
-  const height = variant === 'text' ? 'min-h-11' : tall ? 'min-h-[52px]' : 'min-h-12';
+  const height = variant === 'text' ? 'min-h-11 min-w-11' : tall ? 'min-h-[52px]' : 'min-h-12';
   return (
     <button
       type={type}
@@ -178,7 +178,7 @@ export function Chip({
       aria-pressed={pressed}
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-11 cursor-pointer rounded-full border px-3 text-[13px] ${
+      className={`min-h-11 min-w-12 cursor-pointer rounded-full border px-3 text-[13px] ${
         pressed
           ? 'border-accent bg-accent font-semibold text-white'
           : 'border-field bg-white text-ink'

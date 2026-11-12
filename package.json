@@ -19,7 +19,8 @@
     "test:e2e": "astro build && playwright test",
     "test:all": "npm run lint && npm run check && npm run test && npm run test:e2e",
     "db:generate": "drizzle-kit generate",
-    "ocr:report": "tsx scripts/ocr-report.ts"
+    "ocr:report": "tsx scripts/ocr-report.ts",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.12",
