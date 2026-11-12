@@ -13,6 +13,7 @@ import { SectionTitle } from '../../components/SectionTitle';
 import { useToast } from '../../components/useToast';
 import type { ReceiptSummaryDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
+import { clearManualEntry } from '../draft';
 import { balanceText, formatEuro } from '../format';
 import { useGroup } from '../group';
 import { receiptMeta } from '../members';
@@ -73,7 +74,11 @@ export function Overview() {
                         variant="secondary"
                         tall
                         className="flex-1 text-base"
-                        onClick={() => navigate(`/g/${group.token}/manuell`)}
+                        onClick={() => {
+                            // A manual entry starts empty, whatever was left behind earlier.
+                            clearManualEntry(group.token);
+                            navigate(`/g/${group.token}/manuell`);
+                        }}
                     >
                         Manuell
                     </Button>

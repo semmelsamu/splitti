@@ -26,6 +26,8 @@ test.describe('Belege', () => {
         // --- hochladen -----------------------------------------------------------
         await scanFromGallery(page, PHOTO_A);
         await expect(page.getByText('6 Positionen erkannt')).toBeVisible();
+        // A scan is not a manual entry: no switch to "Ein Betrag".
+        await expect(page.getByRole('button', { name: 'Ein Betrag' })).toHaveCount(0);
         await expect(page.getByText(/^Kaufland · \d{2}\.\d{2}\.\d{4}$/)).toBeVisible();
         await expect(page.getByText('Summe Positionen 11,63 €')).toBeVisible();
         await expect(page.getByTestId('total-check')).toHaveText('Zettelsumme 11,63 € · stimmt');
@@ -637,6 +639,142 @@ test.describe('Manueller Eintrag', () => {
         await expect(page.getByRole('region', { name: 'Letzte Belege' })).toContainText(
             'bezahlt von Du · manuell',
         );
+    });
+
+    test('der Umschalter bleibt in beiden Ansichten, und beim Wechsel geht nichts verloren', async ({
+        page,
+    }) => {
+        const toAmount = page.getByRole('button', { name: 'Ein Betrag' });
+        const toPositions = page.getByRole('button', { name: 'Beleg mit Positionen' });
+        const chips = page.getByRole('group', { name: 'Aufteilen auf' });
+        await expect(toAmount).toHaveAttribute('aria-pressed', 'true');
+        await expect(toPositions).toHaveAttribute('aria-pressed', 'false');
+
+        // Fill in the view with one amount.
+        await page.getByLabel('Bezeichnung').fill('Wochenmarkt');
+        await page.getByLabel('Betrag in €').fill('12,50');
+        await page.getByLabel('Datum').fill('2026-11-01');
+        await page.getByRole('button', { name: /^Bezahlt von Du/ }).click();
+        await page
+            .getByRole('dialog', { name: 'Bezahlt von' })
+            .getByRole('button', { name: 'Karl' })
+            .click();
+        await chips.getByRole('button', { name: 'Rosi' }).click();
+
+        // Over to the positions: the switch is still there; name, date and payer came along.
+        await toPositions.click();
+        await expect(page).toHaveURL(/\/beleg\/neu$/);
+        await expect(toPositions).toHaveAttribute('aria-pressed', 'true');
+        await expect(toAmount).toHaveAttribute('aria-pressed', 'false');
+        await expect(page.getByText('Wochenmarkt · 01.11.2026')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Bezahlt von Karl' })).toBeVisible();
+        await page.getByRole('button', { name: '+ Position hinzufügen' }).click();
+        const add = page.getByRole('dialog', { name: 'Position hinzufügen' });
+        await add.getByLabel('Bezeichnung').fill('Äpfel');
+        await add.getByLabel('Preis in €').fill('3,20');
+        await add.getByRole('button', { name: 'Übernehmen' }).click();
+        await assign(positions(page).nth(0), 'Toni');
+        // A change made here goes back to the other view as well.
+        await page.getByRole('button', { name: 'Bezahlt von Karl' }).click();
+        await page
+            .getByRole('dialog', { name: 'Bezahlt von' })
+            .getByRole('button', { name: 'Rosi' })
+            .click();
+
+        // Back to the single amount: what was typed there is still there.
+        await toAmount.click();
+        await expect(page).toHaveURL(/\/manuell$/);
+        await expect(page.getByRole('heading', { name: 'Manueller Eintrag' })).toBeVisible();
+        await expect(toAmount).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.getByLabel('Bezeichnung')).toHaveValue('Wochenmarkt');
+        await expect(page.getByLabel('Betrag in €')).toHaveValue('12,50');
+        await expect(page.getByLabel('Datum')).toHaveValue('2026-11-01');
+        await expect(page.getByRole('button', { name: /^Bezahlt von Rosi/ })).toBeVisible();
+        await expect(chips.getByRole('button', { name: 'Rosi' })).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        );
+        await expect(chips.getByRole('button', { name: 'Karl' })).toHaveAttribute(
+            'aria-pressed',
+            'false',
+        );
+
+        // And the position waits on the other side, with its assignment, even after a reload.
+        await toPositions.click();
+        await expect(positions(page)).toHaveCount(1);
+        await page.reload();
+        await expect(positions(page).nth(0)).toContainText('Äpfel');
+        await expect(positions(page).nth(0).getByRole('button', { name: 'Toni' })).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        );
+        await toAmount.click();
+        await expect(page.getByLabel('Betrag in €')).toHaveValue('12,50');
+
+        // Leaving from here would drop the position, so the app asks first.
+        await page.getByRole('button', { name: 'Zurück' }).click();
+        const confirm = page.getByRole('dialog', { name: 'Beleg verwerfen?' });
+        await expect(confirm).toBeVisible();
+        await confirm.getByRole('button', { name: 'Verwerfen' }).click();
+        await expect(page.getByRole('heading', { name: 'WG' })).toBeVisible();
+
+        // The next manual entry starts empty in both views.
+        await page.getByRole('button', { name: 'Manuell', exact: true }).click();
+        await expect(page.getByLabel('Bezeichnung')).toHaveValue('');
+        await expect(page.getByLabel('Betrag in €')).toHaveValue('');
+        await expect(page.getByRole('button', { name: /^Bezahlt von Du/ })).toBeVisible();
+        await toPositions.click();
+        await expect(page.getByText('Der Beleg hat noch keine Positionen')).toBeVisible();
+    });
+
+    test('ein Betrag speichern verwirft die Positionen der anderen Ansicht', async ({ page }) => {
+        await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();
+        await page.getByRole('button', { name: '+ Position hinzufügen' }).click();
+        const add = page.getByRole('dialog', { name: 'Position hinzufügen' });
+        await add.getByLabel('Bezeichnung').fill('Brot');
+        await add.getByLabel('Preis in €').fill('2,29');
+        await add.getByRole('button', { name: 'Übernehmen' }).click();
+
+        await page.getByRole('button', { name: 'Ein Betrag' }).click();
+        await page.getByLabel('Bezeichnung').fill('Internet');
+        await page.getByLabel('Betrag in €').fill('40,00');
+        await page
+            .getByRole('group', { name: 'Aufteilen auf' })
+            .getByRole('button', { name: 'alle' })
+            .click();
+        await page.getByRole('button', { name: 'Speichern' }).click();
+
+        // One receipt is saved, and nothing of the entry is left for the next one.
+        const latest = page.getByRole('region', { name: 'Letzte Belege' });
+        await expect(latest.getByRole('button')).toHaveCount(2); // the receipt and the link below
+        await expect(latest.getByRole('button', { name: /Internet/ })).toContainText('40,00 €');
+        await page.getByRole('button', { name: 'Manuell', exact: true }).click();
+        await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();
+        await expect(page.getByText('Der Beleg hat noch keine Positionen')).toBeVisible();
+    });
+
+    test('beim Bearbeiten eines gespeicherten Belegs gibt es den Umschalter nicht', async ({
+        page,
+        request,
+    }) => {
+        const group = await (await request.get(`/api/groups/${token}`)).json();
+        const samu = group.members[0].id as number;
+        const created = await request.post(`/api/groups/${token}/receipts`, {
+            data: {
+                paidBy: samu,
+                date: '2026-11-10',
+                merchant: 'Markt',
+                source: 'manual',
+                detectedTotalCents: null,
+                items: [{ label: 'Brot', amountCents: 229, kind: 'item', memberIds: [samu] }],
+            },
+        });
+        const { id } = await created.json();
+        await page.goto(`/g/${token}/beleg/${id}/bearbeiten`);
+        await expect(page.getByRole('heading', { name: 'Beleg aufteilen' })).toBeVisible();
+        await expect(positions(page)).toHaveCount(1);
+        await expect(page.getByRole('button', { name: 'Ein Betrag' })).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Beleg mit Positionen' })).toHaveCount(0);
     });
 
     test('ein leerer Beleg lässt sich ohne Nachfrage verlassen, einer mit Positionen nicht', async ({

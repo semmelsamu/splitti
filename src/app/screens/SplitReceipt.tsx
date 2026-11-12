@@ -10,6 +10,7 @@ import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { IconButton } from '../../components/IconButton';
 import { Loading } from '../../components/Loading';
+import { ManualViewSwitch } from '../../components/ManualViewSwitch';
 import { MemberChips } from '../../components/MemberChips';
 import { PayerDialog } from '../../components/PayerDialog';
 import { ReceiptImageButton } from '../../components/ReceiptImageButton';
@@ -18,17 +19,22 @@ import { INPUT_STYLE, TextField } from '../../components/TextField';
 import { api, errorMessage } from '../api';
 import {
     clearDraft,
+    clearManualEntry,
+    DEFAULT_MERCHANT,
     type DraftItem,
     draftFromReceipt,
     draftStatus,
+    isNewManualDraft,
     kindFor,
     loadDraft,
+    loadManualForm,
     newKey,
     type ReceiptDraft,
     storeDraft,
+    storeManualForm,
     toReceiptInput,
 } from '../draft';
-import { formatCents, formatDate, formatEuro, parseAmount } from '../format';
+import { formatCents, formatDate, formatEuro, parseAmount, todayIso } from '../format';
 import { useGroup } from '../group';
 import { selectableMembers } from '../members';
 import { navigate } from '../router';
@@ -121,6 +127,8 @@ interface EditorProps {
 function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
     const group = useGroup();
     const editing = draft.receiptId !== null;
+    /** The second view of the manual entry: it can switch back to the single amount. */
+    const manual = isNewManualDraft(draft);
     const status = draftStatus(draft);
 
     const [error, setError] = useState('');
@@ -145,6 +153,12 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
         });
     };
 
+    /** Drops the new receipt in progress, with the other view of a manual entry. */
+    const forget = () => {
+        if (manual) clearManualEntry(group.token);
+        clearDraft(group.token);
+    };
+
     const save = async () => {
         setBusy(true);
         setError('');
@@ -152,7 +166,7 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
             const input = toReceiptInput(draft);
             if (draft.receiptId === null) {
                 await api.createReceipt(group.token, input);
-                clearDraft(group.token);
+                forget();
             } else {
                 await api.updateReceipt(group.token, draft.receiptId, input);
             }
@@ -165,8 +179,22 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
     };
 
     const leave = () => {
-        if (!editing) clearDraft(group.token);
+        if (!editing) forget();
         navigate(backPath, { replace: true });
+    };
+
+    /** Back to the single amount. The positions stay; name, date and payer go along. */
+    const toAmountView = () => {
+        const form = loadManualForm(group.token);
+        storeManualForm(group.token, {
+            amount: form?.amount ?? '',
+            memberIds: form?.memberIds ?? [],
+            // "Beleg" is only the stand-in for a name that was never typed.
+            label: draft.merchant === DEFAULT_MERCHANT ? (form?.label ?? '') : draft.merchant,
+            date: draft.date || todayIso(),
+            paidBy: draft.paidBy,
+        });
+        navigate(`/g/${group.token}/manuell`, { replace: true });
     };
 
     const imageSrc =
@@ -225,33 +253,44 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
                 )
             }
             banner={
-                <div className="flex shrink-0 items-center gap-3 border-b border-line bg-panel px-4 py-3">
-                    {imageSrc && <ReceiptImageButton src={imageSrc} />}
-                    <button
-                        type="button"
-                        onClick={() => setEditingHead(true)}
-                        aria-label={`Bezeichnung und Datum ändern: ${draft.merchant}, ${formatDate(draft.date)}`}
-                        className="flex min-h-11 min-w-0 flex-1 cursor-pointer flex-col justify-center gap-1 border-0 bg-transparent p-0 text-left text-ink"
+                <>
+                    {manual && (
+                        <div className="shrink-0 px-4 pt-4 pb-3">
+                            <ManualViewSwitch view="positions" onSwitch={toAmountView} />
+                        </div>
+                    )}
+                    <div
+                        className={`flex shrink-0 items-center gap-3 border-b border-line bg-panel px-4 py-3 ${
+                            manual ? 'border-t' : ''
+                        }`}
                     >
-                        <span className="truncate font-semibold">
-                            {draft.merchant || 'Ohne Bezeichnung'} · {formatDate(draft.date)}
-                        </span>
-                        <span className="text-[13px] text-muted">{countText}</span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setChoosingPayer(true)}
-                        className="flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-field bg-white px-3 text-left text-[13px] text-ink"
-                    >
-                        <span>
-                            Bezahlt von
-                            <br />
-                            <strong>{group.label(draft.paidBy)}</strong>
-                        </span>
-                        {/* Tells that a choice opens. */}
-                        <ChevronDownIcon size={16} className="shrink-0 text-muted" />
-                    </button>
-                </div>
+                        {imageSrc && <ReceiptImageButton src={imageSrc} />}
+                        <button
+                            type="button"
+                            onClick={() => setEditingHead(true)}
+                            aria-label={`Bezeichnung und Datum ändern: ${draft.merchant}, ${formatDate(draft.date)}`}
+                            className="flex min-h-11 min-w-0 flex-1 cursor-pointer flex-col justify-center gap-1 border-0 bg-transparent p-0 text-left text-ink"
+                        >
+                            <span className="truncate font-semibold">
+                                {draft.merchant || 'Ohne Bezeichnung'} · {formatDate(draft.date)}
+                            </span>
+                            <span className="text-[13px] text-muted">{countText}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setChoosingPayer(true)}
+                            className="flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-field bg-white px-3 text-left text-[13px] text-ink"
+                        >
+                            <span>
+                                Bezahlt von
+                                <br />
+                                <strong>{group.label(draft.paidBy)}</strong>
+                            </span>
+                            {/* Tells that a choice opens. */}
+                            <ChevronDownIcon size={16} className="shrink-0 text-muted" />
+                        </button>
+                    </div>
+                </>
             }
             footer={
                 <>

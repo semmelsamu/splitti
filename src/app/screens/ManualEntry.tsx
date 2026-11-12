@@ -1,18 +1,30 @@
 // Screen 7: costs without a receipt (wireframe manueller-eintrag.html).
-// Either one amount shared by some people, or an empty receipt whose
-// positions are typed in on the split screen.
+// Either one amount shared by some people, or a receipt whose positions are
+// typed in on the split screen. The two are views of one entry: the switch at
+// the top is on both, and what is filled in survives switching.
 
 import { ChevronDownIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
+import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
+import { ManualViewSwitch } from '../../components/ManualViewSwitch';
 import { MemberChips } from '../../components/MemberChips';
 import { PayerDialog } from '../../components/PayerDialog';
 import { Screen } from '../../components/Screen';
 import { TextField } from '../../components/TextField';
 import { splitReceipt } from '../../core/split';
 import { api, errorMessage } from '../api';
-import { emptyDraft, storeDraft } from '../draft';
+import {
+    clearManualEntry,
+    DEFAULT_MERCHANT,
+    emptyDraft,
+    isNewManualDraft,
+    loadDraft,
+    loadManualForm,
+    storeDraft,
+    storeManualForm,
+} from '../draft';
 import { formatEuro, parseAmount, todayIso } from '../format';
 import { useGroup } from '../group';
 import { selectableMembers } from '../members';
@@ -21,14 +33,24 @@ import { DateField } from './SplitReceipt';
 
 export function ManualEntry() {
     const group = useGroup();
-    const [label, setLabel] = useState('');
-    const [amount, setAmount] = useState('');
-    const [date, setDate] = useState(todayIso());
-    const [paidBy, setPaidBy] = useState(group.me.id);
-    const [memberIds, setMemberIds] = useState<number[]>([]);
+    // What was filled in before switching to the positions and back, if anything.
+    const [stored] = useState(() => loadManualForm(group.token));
+    const known = (id: number) => group.members.some((member) => member.id === id);
+    const [label, setLabel] = useState(stored?.label ?? '');
+    const [amount, setAmount] = useState(stored?.amount ?? '');
+    const [date, setDate] = useState(stored?.date ?? todayIso());
+    const [paidBy, setPaidBy] = useState(
+        stored && known(stored.paidBy) ? stored.paidBy : group.me.id,
+    );
+    const [memberIds, setMemberIds] = useState<number[]>(stored?.memberIds.filter(known) ?? []);
     const [choosingPayer, setChoosingPayer] = useState(false);
+    const [leaving, setLeaving] = useState(false);
     const [error, setError] = useState('');
     const [busy, setBusy] = useState(false);
+
+    useEffect(() => {
+        storeManualForm(group.token, { label, amount, date, paidBy, memberIds });
+    }, [group.token, label, amount, date, paidBy, memberIds]);
 
     const members = selectableMembers(group, [paidBy]);
     const cents = parseAmount(amount);
@@ -62,6 +84,7 @@ export function ManualEntry() {
                 detectedTotalCents: null,
                 items: [{ label: label.trim(), amountCents: cents, kind: 'item', memberIds }],
             });
+            clearManualEntry(group.token);
             await group.reload();
             navigate(`/g/${group.token}`, { replace: true });
         } catch (failure) {
@@ -70,16 +93,40 @@ export function ManualEntry() {
         }
     };
 
-    /** Opens an empty receipt on the split screen, keeping what is filled in so far. */
+    /** The receipt with positions of this entry, if the other view has started one. */
+    const positionsDraft = () => {
+        const draft = loadDraft(group.token);
+        return draft && isNewManualDraft(draft) ? draft : null;
+    };
+
+    /**
+     * Switches to the receipt with positions on the split screen. Positions
+     * entered there before are still there; name, date and payer go along.
+     */
     const withPositions = () => {
-        storeDraft(group.token, emptyDraft(paidBy, label.trim() || 'Beleg', date || todayIso()));
-        navigate(`/g/${group.token}/beleg/neu`);
+        const merchant = label.trim() || DEFAULT_MERCHANT;
+        const day = date || todayIso();
+        const draft = positionsDraft() ?? emptyDraft(paidBy, merchant, day);
+        storeDraft(group.token, { ...draft, paidBy, merchant, date: day });
+        navigate(`/g/${group.token}/beleg/neu`, { replace: true });
+    };
+
+    const leave = () => {
+        clearManualEntry(group.token);
+        navigate(`/g/${group.token}`, { replace: true });
+    };
+
+    /** Positions typed in on the other view would be lost without a word. */
+    const goBack = () => {
+        if ((positionsDraft()?.items.length ?? 0) > 0) setLeaving(true);
+        else leave();
     };
 
     return (
         <Screen
             title="Manueller Eintrag"
             back={`/g/${group.token}`}
+            onBack={goBack}
             footer={
                 <>
                     <div className="text-[13px] text-muted" data-testid="per-person">
@@ -98,23 +145,7 @@ export function ManualEntry() {
                     void save();
                 }}
             >
-                <div className="flex overflow-hidden rounded-lg border border-field">
-                    <button
-                        type="button"
-                        aria-pressed="true"
-                        className="min-h-11 flex-1 border-0 bg-accent text-sm font-semibold text-white"
-                    >
-                        Ein Betrag
-                    </button>
-                    <button
-                        type="button"
-                        aria-pressed="false"
-                        onClick={withPositions}
-                        className="min-h-11 flex-1 cursor-pointer border-0 bg-white text-sm text-ink"
-                    >
-                        Beleg mit Positionen
-                    </button>
-                </div>
+                <ManualViewSwitch view="amount" onSwitch={withPositions} />
 
                 <TextField label="Bezeichnung" value={label} onChange={setLabel} maxLength={60} />
                 <div className="flex gap-3">
@@ -171,6 +202,19 @@ export function ManualEntry() {
                     onSelect={setPaidBy}
                     onClose={() => setChoosingPayer(false)}
                 />
+            )}
+
+            {leaving && (
+                <Dialog title="Beleg verwerfen?" onClose={() => setLeaving(false)}>
+                    <p className="m-0 text-sm text-muted">
+                        Unter „Beleg mit Positionen“ sind Positionen eingetragen, die noch nicht
+                        gespeichert sind. Sie gehen verloren.
+                    </p>
+                    <Button onClick={leave}>Verwerfen</Button>
+                    <Button variant="secondary" onClick={() => setLeaving(false)}>
+                        Weiter bearbeiten
+                    </Button>
+                </Dialog>
             )}
         </Screen>
     );

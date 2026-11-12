@@ -70,6 +70,14 @@ export function draftFromScan(scan: ScanDto, paidBy: number): ReceiptDraft {
     };
 }
 
+/** Name of a receipt typed in by hand until it gets one. */
+export const DEFAULT_MERCHANT = 'Beleg';
+
+/** A new receipt typed in by hand, as opposed to a scan or a saved receipt being changed. */
+export function isNewManualDraft(draft: ReceiptDraft): boolean {
+    return draft.receiptId === null && draft.source === 'manual';
+}
+
 export function emptyDraft(paidBy: number, merchant: string, date: string): ReceiptDraft {
     return {
         receiptId: null,
@@ -157,6 +165,53 @@ export function clearDraft(token: string): void {
     } catch {
         // Nothing to clear.
     }
+}
+
+// --- the manual entry in progress, per group ---------------------------------
+//
+// The manual entry has two views: one amount, or a receipt with positions.
+// The fields of the amount view live here, the positions in the receipt draft
+// above. Both stay in the session storage, so switching between the views
+// loses nothing.
+
+export interface ManualForm {
+    label: string;
+    /** As typed, e.g. "40,00". */
+    amount: string;
+    /** YYYY-MM-DD */
+    date: string;
+    paidBy: number;
+    memberIds: number[];
+}
+
+const manualKey = (token: string) => `splitti.manual.${token}`;
+
+export function loadManualForm(token: string): ManualForm | null {
+    try {
+        const raw = window.sessionStorage.getItem(manualKey(token));
+        return raw ? (JSON.parse(raw) as ManualForm) : null;
+    } catch {
+        return null;
+    }
+}
+
+export function storeManualForm(token: string, form: ManualForm): void {
+    try {
+        window.sessionStorage.setItem(manualKey(token), JSON.stringify(form));
+    } catch {
+        // Without session storage the entry only lives in memory.
+    }
+}
+
+/** Forgets the manual entry in progress: the amount view and the receipt typed in by hand. */
+export function clearManualEntry(token: string): void {
+    try {
+        window.sessionStorage.removeItem(manualKey(token));
+    } catch {
+        // Nothing to clear.
+    }
+    const draft = loadDraft(token);
+    if (draft && isNewManualDraft(draft)) clearDraft(token);
 }
 
 // --- what is still missing before the receipt can be saved -------------------
