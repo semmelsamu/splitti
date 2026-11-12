@@ -100,7 +100,12 @@ export function SplitReceipt({ receiptId }: Props) {
             draft={draft}
             setDraft={setDraft}
             backPath={backPath}
-            changed={editing ? JSON.stringify(toReceiptInput(draft)) !== original : true}
+            changed={
+                editing
+                    ? JSON.stringify(toReceiptInput(draft)) !== original
+                    : // A new receipt has something to lose once it has a position or a photo.
+                      draft.items.length > 0 || draft.imageId !== null
+            }
         />
     );
 }

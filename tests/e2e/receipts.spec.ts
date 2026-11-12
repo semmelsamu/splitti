@@ -484,6 +484,12 @@ test.describe('Scan', () => {
         await expect(page.getByRole('button', { name: 'Zettelbild ansehen' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Speichern' })).toBeDisabled();
 
+        // No positions, but a photo that would be lost: back still asks.
+        await page.getByRole('button', { name: 'Zurück' }).click();
+        const confirm = page.getByRole('dialog', { name: 'Beleg verwerfen?' });
+        await expect(confirm).toBeVisible();
+        await confirm.getByRole('button', { name: 'Weiter bearbeiten' }).click();
+
         await page.getByRole('button', { name: '+ Position hinzufügen' }).click();
         const add = page.getByRole('dialog', { name: 'Position hinzufügen' });
         await add.getByLabel('Bezeichnung').fill('Brot');
@@ -631,6 +637,32 @@ test.describe('Manueller Eintrag', () => {
         await expect(page.getByRole('region', { name: 'Letzte Belege' })).toContainText(
             'bezahlt von Du · manuell',
         );
+    });
+
+    test('ein leerer Beleg lässt sich ohne Nachfrage verlassen, einer mit Positionen nicht', async ({
+        page,
+    }) => {
+        // Nothing entered yet: back leaves at once.
+        await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();
+        await expect(page.getByText('Der Beleg hat noch keine Positionen')).toBeVisible();
+        await page.getByRole('button', { name: 'Zurück' }).click();
+        await expect(page.getByRole('heading', { name: 'WG' })).toBeVisible();
+        await expect(page.getByRole('dialog')).toHaveCount(0);
+
+        // With a position there is something to lose, so the question comes.
+        await page.getByRole('button', { name: 'Manuell', exact: true }).click();
+        await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();
+        await page.getByRole('button', { name: '+ Position hinzufügen' }).click();
+        const add = page.getByRole('dialog', { name: 'Position hinzufügen' });
+        await add.getByLabel('Bezeichnung').fill('Brot');
+        await add.getByLabel('Preis in €').fill('2,29');
+        await add.getByRole('button', { name: 'Übernehmen' }).click();
+        await expect(positions(page)).toHaveCount(1);
+        await page.getByRole('button', { name: 'Zurück' }).click();
+        const confirm = page.getByRole('dialog', { name: 'Beleg verwerfen?' });
+        await expect(confirm).toBeVisible();
+        await confirm.getByRole('button', { name: 'Verwerfen' }).click();
+        await expect(page.getByRole('heading', { name: 'WG' })).toBeVisible();
     });
 
     test('ein Betrag, der keiner ist, wird nicht gespeichert', async ({ page }) => {
