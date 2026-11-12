@@ -12,13 +12,14 @@ Stand: 12.11.2026. Splitti ist nach `docs/PLAN.md` gebaut; alle sieben Meilenste
 | 4 | Gruppen | Browser-Test: Gruppe anlegen, Link öffnen, Mitglied wählen | erfüllt (`tests/e2e/groups.spec.ts`) | `93a4959` |
 | 5 | Belege | Browser-Test: Testzettel hochladen, zuordnen, speichern, ändern, löschen, wiederherstellen | erfüllt mit dem echten Foto von Zettel A und der echten Erkennung (`tests/e2e/receipts.spec.ts`) | `f0b480c` |
 | 6 | Salden | Browser-Test: Salden stimmen nach zwei Belegen und einer Zahlung | erfüllt, auf den Cent genau einschließlich Rundungscent (`tests/e2e/balances.spec.ts`) | `1f798d9` |
-| 7 | PWA und Abschluss | Installierbarkeit geprüft, alle Tests grün, Anleitung für Installation und Update im README | erfüllt: Manifest, Icons und Service Worker getestet, Chromium meldet keine Installationshindernisse; README mit Installation, Update, Sicherung, Proxy-Netzwerk | Commit mit diesem Bericht |
+| 7 | PWA und Abschluss | Installierbarkeit geprüft, alle Tests grün, Anleitung für Installation und Update im README | erfüllt: Manifest, Icons und Service Worker getestet, Chromium meldet keine Installationshindernisse; README mit Installation, Update, Sicherung, Proxy-Netzwerk | `af7037f` |
 
 Zahlen zum Schluss:
 
 - 179 Unit-Tests (Vitest) in 10 Dateien: Rechenkern, Geldbeträge, Kaufland-Parser, Zerlegung in Textfragmente, Zeilenbildung, Erkennung an den drei Fotos, Migrationen
 - 79 Browser- und API-Tests (Playwright) in 9 Dateien, im Handy-Format 390 × 844
 - `npm run test:all` (Lint, Typprüfung, alle Tests) läuft lokal in unter einer Minute durch
+- `npm ci` läuft mit npm 11 und npm 12 ohne Compiler durch (`.npmrc`, Entscheidung Nr. 6)
 - 58 Entscheidungen in `docs/DECISIONS.md`
 
 ## Was am fertigen Container geprüft wurde
@@ -27,7 +28,7 @@ Von Hand am gebauten Image (`docker compose up -d --build`), nicht nur über die
 
 | Prüfung | Ergebnis |
 | --- | --- |
-| Bau und Start mit einem Befehl, ohne vorherige Schritte | ja; `.env` ist eingecheckt, `data/` wird mitgeliefert |
+| Bau und Start mit einem Befehl, ohne vorherige Schritte | ja, auch aus einem frischen Klon des Repos: `.env` ist eingecheckt, `data/` wird mitgeliefert |
 | `/api/health` | antwortet `{"status":"ok"}`, Container wird „healthy“ |
 | Scan von Zettel A über die API des Containers | 6 von 6 Positionen, alle Beträge richtig, Summe 11,63 erkannt, knapp 2 Sekunden auf dem Entwicklungsrechner |
 | Daten nach `docker compose down` und erneutem `up -d --build` | Gruppe, Beleg und Zettelbild unverändert vorhanden |
