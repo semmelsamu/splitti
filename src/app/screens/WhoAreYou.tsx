@@ -2,10 +2,14 @@
 // Shown on the first visit of a group on this device, and from the settings.
 
 import { useState } from 'react';
+import { Button } from '../../components/Button';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Screen } from '../../components/Screen';
+import { TextField } from '../../components/TextField';
 import type { GroupDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { setIdentity } from '../device';
-import { Button, Dialog, ErrorNote, Screen, TextField } from '../ui';
 
 interface Props {
     token: string;

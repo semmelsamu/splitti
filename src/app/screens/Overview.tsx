@@ -1,24 +1,22 @@
 // Screen 4: the state of the group (wireframe gruppenuebersicht.html).
 
 import { useEffect, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { IconButton } from '../../components/IconButton';
+import { MenuIcon } from '../../components/icons';
+import { Screen } from '../../components/Screen';
+import { SectionTitle } from '../../components/SectionTitle';
+import { useToast } from '../../components/useToast';
 import type { ReceiptSummaryDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { balanceText, formatEuro } from '../format';
 import { useGroup } from '../group';
-import { receiptMeta } from '../parts';
+import { receiptMeta } from '../members';
 import { navigate } from '../router';
 import { invitationLink, shareInvitation } from '../share';
-import {
-    Button,
-    Card,
-    Dialog,
-    ErrorNote,
-    IconButton,
-    MenuIcon,
-    Screen,
-    SectionTitle,
-    useToast,
-} from '../ui';
 
 /** How many receipts the overview shows; the rest is one tap away. */
 const LATEST = 3;

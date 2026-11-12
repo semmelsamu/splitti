@@ -3,14 +3,19 @@
 // positions are typed in on the split screen.
 
 import { useState } from 'react';
+import { Button } from '../../components/Button';
+import { ErrorNote } from '../../components/ErrorNote';
+import { MemberChips } from '../../components/MemberChips';
+import { PayerDialog } from '../../components/PayerDialog';
+import { Screen } from '../../components/Screen';
+import { TextField } from '../../components/TextField';
 import { splitReceipt } from '../../core/split';
 import { api, errorMessage } from '../api';
 import { emptyDraft, storeDraft } from '../draft';
 import { formatEuro, parseAmount, todayIso } from '../format';
 import { useGroup } from '../group';
-import { MemberChips, PayerDialog, selectableMembers } from '../parts';
+import { selectableMembers } from '../members';
 import { navigate } from '../router';
-import { Button, ErrorNote, Screen, TextField } from '../ui';
 import { DateField } from './SplitReceipt';
 
 export function ManualEntry() {

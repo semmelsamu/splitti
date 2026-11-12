@@ -1,23 +1,21 @@
 // Screen 1: the groups this device knows (wireframe start.html).
 
 import { useEffect, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Hint } from '../../components/Hint';
+import { ChevronRight } from '../../components/icons';
+import { Screen } from '../../components/Screen';
+import { SectionTitle } from '../../components/SectionTitle';
+import { TextField } from '../../components/TextField';
 import type { GroupDto } from '../../shared/api-types';
 import { ApiRequestError, api } from '../api';
 import { forgetGroup, type KnownGroup, useKnownGroups } from '../device';
 import { memberCountText, ownBalanceText } from '../format';
 import { navigate } from '../router';
 import { tokenFromInput } from '../share';
-import {
-    Button,
-    Card,
-    ChevronRight,
-    Dialog,
-    ErrorNote,
-    Hint,
-    Screen,
-    SectionTitle,
-    TextField,
-} from '../ui';
 
 type Summary =
     | { status: 'loading' }

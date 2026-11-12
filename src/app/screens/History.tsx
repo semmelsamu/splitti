@@ -2,13 +2,19 @@
 // deleted ones (which can be restored here), and the log of who changed what.
 
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Loading } from '../../components/Loading';
+import { Screen } from '../../components/Screen';
+import { SectionTitle } from '../../components/SectionTitle';
 import type { ChangeDto, PaymentDto, ReceiptSummaryDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { formatDate, formatDateTime, formatEuro } from '../format';
 import { useGroup } from '../group';
-import { receiptMeta } from '../parts';
+import { receiptMeta } from '../members';
 import { Link } from '../router';
-import { Button, Card, Dialog, ErrorNote, Loading, Screen, SectionTitle } from '../ui';
 
 export function History() {
     const group = useGroup();

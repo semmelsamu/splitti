@@ -193,6 +193,7 @@ Aufbau:
 | `src/server/` | Datenbank, Dienste für Gruppen, Belege, Zahlungen, Verlauf, Bildablage |
 | `src/pages/api/` | API-Endpunkte; jeder hängt am Link-Code der Gruppe |
 | `src/app/` | Oberfläche (React): Screens, Router, Gerätespeicher |
+| `src/components/` | Bausteine der Oberfläche, je eine Datei: Screen-Rahmen, Knöpfe, Felder, Dialoge |
 | `src/sw/` | Service Worker für die App-Hülle |
 | `drizzle/` | Datenbank-Migrationen |
 | `tests/unit/`, `tests/e2e/` | Vitest- und Playwright-Tests |

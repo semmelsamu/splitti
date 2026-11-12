@@ -2,26 +2,23 @@
 // and which member this device is.
 
 import { useState } from 'react';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Hint } from '../../components/Hint';
+import { IconButton } from '../../components/IconButton';
+import { CloseIcon, PencilIcon } from '../../components/icons';
+import { Screen } from '../../components/Screen';
+import { SectionTitle } from '../../components/SectionTitle';
+import { TextField } from '../../components/TextField';
+import { useToast } from '../../components/useToast';
 import type { MemberDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { forgetGroup, setIdentity } from '../device';
 import { useGroup } from '../group';
 import { navigate } from '../router';
 import { invitationLink, shareInvitation } from '../share';
-import {
-    Button,
-    Card,
-    CloseIcon,
-    Dialog,
-    ErrorNote,
-    Hint,
-    IconButton,
-    PencilIcon,
-    Screen,
-    SectionTitle,
-    TextField,
-    useToast,
-} from '../ui';
 import { WhoAreYou } from './WhoAreYou';
 
 export function Settings() {

@@ -1,6 +1,7 @@
 // The one React island: decides from the path which screen to show.
 
 import type { ReactNode } from 'react';
+import { Screen } from '../components/Screen';
 import { GroupRoot } from './group';
 import { Link, matchPath, usePath } from './router';
 import { CreateGroup } from './screens/CreateGroup';
@@ -13,7 +14,6 @@ import { Settings } from './screens/Settings';
 import { Settle } from './screens/Settle';
 import { SplitReceipt } from './screens/SplitReceipt';
 import { Start } from './screens/Start';
-import { Screen } from './ui';
 
 /** Screens inside a group, by the path below /g/:token. */
 const GROUP_SCREENS: { pattern: string; render: (params: Record<string, string>) => ReactNode }[] =

@@ -1,10 +1,17 @@
 // Screen 2: create a group (wireframe gruppe-erstellen.html).
 
 import { useState } from 'react';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Hint } from '../../components/Hint';
+import { IconButton } from '../../components/IconButton';
+import { CloseIcon } from '../../components/icons';
+import { Screen } from '../../components/Screen';
+import { TextField } from '../../components/TextField';
 import { api, errorMessage } from '../api';
 import { rememberGroup, setIdentity } from '../device';
 import { navigate } from '../router';
-import { Button, Card, CloseIcon, ErrorNote, Hint, IconButton, Screen, TextField } from '../ui';
 
 export function CreateGroup() {
     const [name, setName] = useState('');

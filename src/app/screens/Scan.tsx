@@ -3,11 +3,13 @@
 // on the server, with progress.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '../../components/Button';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Screen } from '../../components/Screen';
 import { errorMessage, uploadScan } from '../api';
 import { draftFromScan, storeDraft } from '../draft';
 import { useGroup } from '../group';
 import { navigate } from '../router';
-import { Button, ErrorNote, Screen } from '../ui';
 
 type Camera = 'starting' | 'on' | 'off';
 type Phase = { step: 'idle' } | { step: 'uploading'; share: number } | { step: 'recognising' };

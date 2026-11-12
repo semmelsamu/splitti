@@ -3,6 +3,18 @@
 // receipt with positions, and for changing a saved receipt.
 
 import { useEffect, useMemo, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Chip } from '../../components/Chip';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { IconButton } from '../../components/IconButton';
+import { PencilIcon } from '../../components/icons';
+import { Loading } from '../../components/Loading';
+import { MemberChips } from '../../components/MemberChips';
+import { PayerDialog } from '../../components/PayerDialog';
+import { ReceiptImageButton } from '../../components/ReceiptImageButton';
+import { Screen } from '../../components/Screen';
+import { INPUT_STYLE, TextField } from '../../components/TextField';
 import { api, errorMessage } from '../api';
 import {
     clearDraft,
@@ -18,20 +30,8 @@ import {
 } from '../draft';
 import { formatCents, formatDate, formatEuro, parseAmount } from '../format';
 import { useGroup } from '../group';
-import { MemberChips, PayerDialog, ReceiptImageButton, selectableMembers } from '../parts';
+import { selectableMembers } from '../members';
 import { navigate } from '../router';
-import {
-    Button,
-    Chip,
-    Dialog,
-    ErrorNote,
-    IconButton,
-    INPUT_STYLE,
-    Loading,
-    PencilIcon,
-    Screen,
-    TextField,
-} from '../ui';
 
 interface Props {
     /** Id of the saved receipt to change; without it the new receipt in progress is shown. */

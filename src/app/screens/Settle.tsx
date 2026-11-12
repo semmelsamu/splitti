@@ -1,21 +1,18 @@
 // Screen 9: who owes whom how much, and entering payments (wireframe begleichen.html).
 
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Loading } from '../../components/Loading';
+import { Screen } from '../../components/Screen';
+import { INPUT_STYLE, TextField } from '../../components/TextField';
+import { useToast } from '../../components/useToast';
 import type { TransferDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { formatEuro, parseAmount, todayIso } from '../format';
 import { useGroup } from '../group';
-import { selectableMembers } from '../parts';
-import {
-    Button,
-    Dialog,
-    ErrorNote,
-    INPUT_STYLE,
-    Loading,
-    Screen,
-    TextField,
-    useToast,
-} from '../ui';
+import { selectableMembers } from '../members';
 import { DateField } from './SplitReceipt';
 
 export function Settle() {

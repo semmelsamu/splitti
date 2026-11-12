@@ -2,13 +2,19 @@
 // positions with who shares them, what each person bears, and who changed what.
 
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from '../../components/Button';
+import { Dialog } from '../../components/Dialog';
+import { ErrorNote } from '../../components/ErrorNote';
+import { Loading } from '../../components/Loading';
+import { ReceiptImageButton } from '../../components/ReceiptImageButton';
+import { Screen } from '../../components/Screen';
+import { SectionTitle } from '../../components/SectionTitle';
 import type { ReceiptDetailDto } from '../../shared/api-types';
 import { api, errorMessage } from '../api';
 import { formatDate, formatDateTime, formatEuro } from '../format';
 import { useGroup } from '../group';
-import { ReceiptImageButton, selectableMembers, sharersText } from '../parts';
+import { selectableMembers, sharersText } from '../members';
 import { navigate } from '../router';
-import { Button, Dialog, ErrorNote, Loading, Screen, SectionTitle } from '../ui';
 
 export function ReceiptDetail({ receiptId }: { receiptId: number }) {
     const group = useGroup();
