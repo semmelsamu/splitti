@@ -6,6 +6,7 @@ import { Button } from '../../components/Button';
 import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { Loading } from '../../components/Loading';
+import { MemberDot } from '../../components/MemberDot';
 import { ReceiptImageButton } from '../../components/ReceiptImageButton';
 import { Screen } from '../../components/Screen';
 import { SectionTitle } from '../../components/SectionTitle';
@@ -165,9 +166,10 @@ export function ReceiptDetail({ receiptId }: { receiptId: number }) {
                                 receipt.shares.find((share) => share.memberId === member.id)
                                     ?.cents ?? 0;
                             return (
-                                <div key={member.id} className="flex">
-                                    <dt className="min-w-0 flex-1 truncate">
-                                        {group.label(member.id)}
+                                <div key={member.id} className="flex gap-2">
+                                    <dt className="flex min-w-0 flex-1 items-center gap-2">
+                                        <MemberDot color={member.color} />
+                                        <span className="truncate">{group.label(member.id)}</span>
                                     </dt>
                                     <dd className="m-0 font-semibold">{formatEuro(cents)}</dd>
                                 </div>

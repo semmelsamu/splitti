@@ -183,6 +183,51 @@ test.describe('Belege', () => {
     });
 });
 
+test.describe('Belegansicht', () => {
+    test('unter „Anteile“ steht bei jedem Namen die Farbe des Mitglieds', async ({
+        page,
+        request,
+    }) => {
+        const group = await createGroup(request, 'WG', ['Samu', 'Karl', 'Rosi']);
+        const created = await request.post(`/api/groups/${group.token}/receipts`, {
+            data: {
+                paidBy: group.ids.Samu,
+                date: '2026-11-10',
+                merchant: 'REWE',
+                source: 'manual',
+                detectedTotalCents: null,
+                items: [
+                    {
+                        label: 'Käse',
+                        amountCents: 300,
+                        kind: 'item',
+                        memberIds: [group.ids.Samu, group.ids.Karl],
+                    },
+                ],
+            },
+        });
+        const { id } = await created.json();
+
+        await openGroupAs(page, group.token, 'Samu');
+        await page.goto(`/g/${group.token}/beleg/${id}`);
+        const shares = page.getByRole('region', { name: 'Anteile' });
+        const dotOf = (name: string) =>
+            shares.locator('div').filter({ hasText: name }).locator('[data-member-dot]');
+        // The colours the members got when the group was created.
+        await expect(dotOf('Du')).toHaveCSS('background-color', 'rgb(29, 78, 216)');
+        await expect(dotOf('Karl')).toHaveCSS('background-color', 'rgb(180, 83, 9)');
+        // Only those who share the receipt are listed.
+        await expect(shares.locator('[data-member-dot]')).toHaveCount(2);
+
+        // A colour chosen in the group settings shows up here.
+        await request.patch(`/api/groups/${group.token}/members/${group.ids.Karl}`, {
+            data: { color: '#b91c1c' },
+        });
+        await page.reload();
+        await expect(dotOf('Karl')).toHaveCSS('background-color', 'rgb(185, 28, 28)');
+    });
+});
+
 test.describe('Beleg aufteilen', () => {
     let token: string;
 
