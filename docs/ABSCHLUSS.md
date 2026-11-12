@@ -104,3 +104,5 @@ Der Bericht oben beschreibt den Stand von Version 0.1. Seitdem:
 - Der Stand ist auf GitHub und als Version 0.1 veröffentlicht (Tag `v0.1.0`). Punkt 7 unter „Die wichtigsten Entscheidungen“ und Schritt 1 unter „Nächste Schritte“ sind damit erledigt.
 - Der Workflow auf GitHub ist trotz Push noch nicht gelaufen: Die Jobs wurden nicht gestartet. Der Punkt „GitHub Actions“ bleibt offen.
 - Aufgeräumt nach 0.1 (Entscheidungen Nr. 59 bis 61): Einrückung mit 4 Leerzeichen, Bausteine der Oberfläche unter `src/components/`, Icons aus `lucide-react`.
+- Rückmeldungen aus dem ersten Ausprobieren umgesetzt (Issues #1 bis #8 auf GitHub, Entscheidungen Nr. 62 bis 67): Pfeil zurück zur Startseite, Zahnrad für die Gruppeneinstellungen, Farbwahl für Mitglieder aus einer festen Palette, Farbpunkte unter „Anteile“, Zettelfoto als Vorschau in der Belegliste, Pfeil am Feld „Bezahlt von“, Umschalter „Ein Betrag | Beleg mit Positionen“ in beiden Ansichten, keine Verwerfen-Abfrage beim leeren Beleg.
+- Stand der Tests danach: 185 Unit-Tests, 92 Browser-Tests, Lint und Typprüfung grün; das Image baut, und Farbwahl, Scan und Bildvorschau wurden am Container geprüft.
