@@ -91,6 +91,57 @@ test.describe('groups API', () => {
         expect((await response.json()).member.name).toBe('Karl-Heinz');
     });
 
+    test('changes the colour of a member to one of the palette and logs it', async ({
+        request,
+    }) => {
+        const { token, memberId, ids } = await createGroup(request, 'WG', ['Samu', 'Karl']);
+        const response = await request.patch(`/api/groups/${token}/members/${ids.Karl}`, {
+            data: { color: '#b91c1c' },
+            headers: as(memberId),
+        });
+        expect(response.status()).toBe(200);
+        expect((await response.json()).member.color).toBe('#b91c1c');
+
+        const group = await (await request.get(`/api/groups/${token}`)).json();
+        const karl = group.members.find((m: { name: string }) => m.name === 'Karl');
+        expect(karl.color).toBe('#b91c1c');
+
+        const log = await (await request.get(`/api/groups/${token}/changes`)).json();
+        const entry = log.changes.find((change: { summary: string }) =>
+            change.summary.includes('Farbe'),
+        );
+        expect(entry).toMatchObject({
+            memberId,
+            summary: 'hat die Farbe von „Karl“ auf Rot geändert',
+        });
+    });
+
+    test('rejects a colour that is not in the palette', async ({ request }) => {
+        const { token, ids } = await createGroup(request, 'WG', ['Samu', 'Karl']);
+        for (const color of ['#123456', 'red', 'url(https://example.org/x)', '', 7]) {
+            const response = await request.patch(`/api/groups/${token}/members/${ids.Karl}`, {
+                data: { color },
+            });
+            expect(response.status(), String(color)).toBe(400);
+            expect((await response.json()).message).toBe('Diese Farbe steht nicht zur Auswahl.');
+        }
+        const group = await (await request.get(`/api/groups/${token}`)).json();
+        const karl = group.members.find((m: { name: string }) => m.name === 'Karl');
+        expect(karl.color).toBe('#b45309');
+    });
+
+    test('gives a new member a colour nobody in the group has yet', async ({ request }) => {
+        const { token, ids } = await createGroup(request, 'WG', ['Samu', 'Karl']);
+        // Samu takes the colour that would be next in turn.
+        await request.patch(`/api/groups/${token}/members/${ids.Samu}`, {
+            data: { color: '#047857' },
+        });
+        const added = await request.post(`/api/groups/${token}/members`, {
+            data: { name: 'Rosi' },
+        });
+        expect((await added.json()).member.color).toBe('#1d4ed8');
+    });
+
     test('removing a member without entries deletes it', async ({ request }) => {
         const { token, memberId, ids } = await createGroup(request, 'WG', ['Samu', 'Karl']);
         const response = await request.patch(`/api/groups/${token}/members/${ids.Karl}`, {
@@ -133,6 +184,11 @@ test.describe('groups API', () => {
             data: { active: false },
         });
         expect(remove.status()).toBe(404);
+
+        const recolor = await request.patch(`/api/groups/${other.token}/members/${mine.ids.Karl}`, {
+            data: { color: '#b91c1c' },
+        });
+        expect(recolor.status()).toBe(404);
 
         const group = await (await request.get(`/api/groups/${mine.token}`)).json();
         expect(group.members.map((m: { name: string }) => m.name)).toEqual(['Samu', 'Karl']);

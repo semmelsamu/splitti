@@ -186,6 +186,35 @@ test.describe('Gruppeneinstellungen', () => {
         await expect(page.getByText('Entfernte Mitglieder')).toHaveCount(0);
     });
 
+    test('Farbe eines Mitglieds aus der Palette wählen', async ({ page }) => {
+        const dot = page
+            .getByRole('button', { name: 'Farbe von Karl wählen' })
+            .locator('[data-member-dot]');
+        await expect(dot).toHaveCSS('background-color', 'rgb(180, 83, 9)');
+
+        await page.getByRole('button', { name: 'Farbe von Karl wählen' }).click();
+        const palette = page.getByRole('dialog', { name: 'Farbe von Karl' });
+        // A fixed set of named colours, the current one marked.
+        await expect(palette.getByRole('button')).toHaveCount(13); // 12 colours and "Schließen"
+        await expect(palette.getByRole('button', { name: 'Orange' })).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        );
+        await palette.getByRole('button', { name: 'Rot' }).click();
+        await expect(palette).toHaveCount(0);
+        await expect(dot).toHaveCSS('background-color', 'rgb(185, 28, 28)');
+
+        // Saved on the server, not just on this screen.
+        await page.reload();
+        await expect(dot).toHaveCSS('background-color', 'rgb(185, 28, 28)');
+        await page.getByRole('button', { name: 'Farbe von Karl wählen' }).click();
+        await expect(
+            page
+                .getByRole('dialog', { name: 'Farbe von Karl' })
+                .getByRole('button', { name: 'Rot' }),
+        ).toHaveAttribute('aria-pressed', 'true');
+    });
+
     test('sich selbst kann man nicht entfernen', async ({ page }) => {
         await expect(page.getByText('Samu (du)')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Samu entfernen' })).toHaveCount(0);

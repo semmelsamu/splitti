@@ -98,7 +98,11 @@ export const api = {
             token,
         }),
 
-    updateMember: (token: string, id: number, change: { name?: string; active?: boolean }) =>
+    updateMember: (
+        token: string,
+        id: number,
+        change: { name?: string; active?: boolean; color?: string },
+    ) =>
         request<{ member: MemberDto | null }>(`${group(token)}/members/${id}`, {
             method: 'PATCH',
             body: change,

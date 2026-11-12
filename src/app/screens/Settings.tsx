@@ -1,7 +1,7 @@
 // Group settings, a sub-page of the overview: name, members, invitation link,
 // and which member this device is.
 
-import { PencilIcon, XIcon } from 'lucide-react';
+import { CheckIcon, PencilIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -9,11 +9,13 @@ import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { Hint } from '../../components/Hint';
 import { IconButton } from '../../components/IconButton';
+import { MemberDot } from '../../components/MemberDot';
 import { Screen } from '../../components/Screen';
 import { SectionTitle } from '../../components/SectionTitle';
 import { TextField } from '../../components/TextField';
 import { useToast } from '../../components/useToast';
 import type { MemberDto } from '../../shared/api-types';
+import { MEMBER_COLORS } from '../../shared/member-colors';
 import { api, errorMessage } from '../api';
 import { forgetGroup, setIdentity } from '../device';
 import { useGroup } from '../group';
@@ -29,6 +31,7 @@ export function Settings() {
     const [error, setError] = useState('');
     const [busy, setBusy] = useState(false);
     const [renaming, setRenaming] = useState<MemberDto | null>(null);
+    const [coloring, setColoring] = useState<MemberDto | null>(null);
     const [removing, setRemoving] = useState<MemberDto | null>(null);
     const [choosingIdentity, setChoosingIdentity] = useState(false);
     const [forgetting, setForgetting] = useState(false);
@@ -110,12 +113,13 @@ export function Settings() {
                     <SectionTitle>Mitglieder</SectionTitle>
                     <Card>
                         {group.activeMembers.map((member) => (
-                            <div key={member.id} className="flex items-center pr-1 pl-3.5">
-                                <span
-                                    aria-hidden="true"
-                                    className="mr-2.5 h-3 w-3 shrink-0 rounded-full"
-                                    style={{ backgroundColor: member.color }}
-                                />
+                            <div key={member.id} className="flex items-center pr-1 pl-0.5">
+                                <IconButton
+                                    label={`Farbe von ${member.name} wählen`}
+                                    onClick={() => setColoring(member)}
+                                >
+                                    <MemberDot color={member.color} size={20} />
+                                </IconButton>
                                 <span className="min-w-0 flex-1 truncate">
                                     {member.name}
                                     {member.id === group.me.id && (
@@ -259,6 +263,21 @@ export function Settings() {
                 />
             )}
 
+            {coloring && (
+                <ColorDialog
+                    member={coloring}
+                    onClose={() => setColoring(null)}
+                    onSelect={async (color) => {
+                        const ok = await run(() =>
+                            api.updateMember(group.token, coloring.id, { color }),
+                        );
+                        if (ok) setColoring(null);
+                    }}
+                    busy={busy}
+                    error={error}
+                />
+            )}
+
             {removing && (
                 <Dialog title={`${removing.name} entfernen?`} onClose={() => setRemoving(null)}>
                     <p className="m-0 text-sm text-muted">
@@ -307,6 +326,52 @@ export function Settings() {
             )}
             {toast}
         </Screen>
+    );
+}
+
+/** The fixed palette to choose from; a tap saves. */
+function ColorDialog({
+    member,
+    onClose,
+    onSelect,
+    busy,
+    error,
+}: {
+    member: MemberDto;
+    onClose: () => void;
+    onSelect: (color: string) => void | Promise<void>;
+    busy: boolean;
+    error: string;
+}) {
+    return (
+        <Dialog title={`Farbe von ${member.name}`} onClose={onClose}>
+            <div className="grid grid-cols-6 justify-items-center gap-y-2">
+                {MEMBER_COLORS.map((color) => {
+                    const current = color.value === member.color;
+                    return (
+                        <button
+                            key={color.value}
+                            type="button"
+                            aria-label={color.name}
+                            aria-pressed={current}
+                            disabled={busy}
+                            onClick={() => (current ? onClose() : void onSelect(color.value))}
+                            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0"
+                        >
+                            <span
+                                className={`flex h-9 w-9 items-center justify-center rounded-full text-white ${
+                                    current ? 'outline-2 outline-offset-2 outline-ink' : ''
+                                }`}
+                                style={{ backgroundColor: color.value }}
+                            >
+                                {current && <CheckIcon size={18} strokeWidth={3} />}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+            <ErrorNote>{error}</ErrorNote>
+        </Dialog>
     );
 }
 

@@ -4,6 +4,7 @@
 import { randomBytes } from 'node:crypto';
 import { and, asc, eq, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { MEMBER_COLOR_VALUES, memberColorName, nextMemberColor } from '../shared/member-colors';
 import { logChange } from './changes';
 import { type Db, schema } from './db';
 import { type Group, invalid, notFound, nowIso } from './http';
@@ -11,20 +12,6 @@ import { type Group, invalid, notFound, nowIso } from './http';
 const { groups, members, receipts, shares, payments, changes } = schema;
 
 export type Member = typeof members.$inferSelect;
-
-/** Colours for members, assigned in turn. Dark enough for white text. */
-const COLORS = [
-    '#1d4ed8',
-    '#b45309',
-    '#047857',
-    '#be185d',
-    '#6d28d9',
-    '#0e7490',
-    '#b91c1c',
-    '#4d7c0f',
-    '#a21caf',
-    '#475569',
-];
 
 const name = (what: string) =>
     z
@@ -47,10 +34,19 @@ export const renameGroupShape = z.object({ name: name('Der Name der Gruppe') });
 export const newMemberShape = z.object({ name: name('Der Name') });
 
 export const updateMemberShape = z
-    .object({ name: name('Der Name').optional(), active: z.boolean().optional() })
-    .refine((value) => value.name !== undefined || value.active !== undefined, {
-        message: 'Es wurde nichts zum Ändern angegeben.',
-    });
+    .object({
+        name: name('Der Name').optional(),
+        active: z.boolean().optional(),
+        // Only the colours of the palette, no free choice.
+        color: z
+            .enum(MEMBER_COLOR_VALUES, { error: 'Diese Farbe steht nicht zur Auswahl.' })
+            .optional(),
+    })
+    .refine(
+        (value) =>
+            value.name !== undefined || value.active !== undefined || value.color !== undefined,
+        { message: 'Es wurde nichts zum Ändern angegeben.' },
+    );
 
 /** A long random code; the link with this code is the only key to the group. */
 function newToken(): string {
@@ -81,19 +77,22 @@ export function createGroup(
             .values({ name: input.name, token, createdAt: now })
             .returning()
             .get();
-        const created = names.map((memberName, index) =>
-            tx
+        const colors: string[] = [];
+        const created = names.map((memberName) => {
+            const color = nextMemberColor(colors);
+            colors.push(color);
+            return tx
                 .insert(members)
                 .values({
                     groupId: group.id,
                     name: memberName,
-                    color: COLORS[index % COLORS.length] as string,
+                    color,
                     active: true,
                     createdAt: now,
                 })
                 .returning()
-                .get(),
-        );
+                .get();
+        });
         const creator = created[0] as Member;
         logChange(tx, {
             groupId: group.id,
@@ -174,7 +173,7 @@ export function addMember(
             .values({
                 groupId: group.id,
                 name: memberName,
-                color: COLORS[existing.length % COLORS.length] as string,
+                color: nextMemberColor(existing.map((other) => other.color)),
                 active: true,
                 createdAt: nowIso(),
             })
@@ -230,7 +229,7 @@ export interface MemberUpdateResult {
 }
 
 /**
- * Renames, removes or re-admits a member. Removing deletes a member that has
+ * Renames, recolours, removes or re-admits a member. Removing deletes a member that has
  * no entries at all; a member with entries is only deactivated, so that old
  * receipts and balances stay correct.
  */
@@ -264,6 +263,19 @@ export function updateMember(
                 summary: `hat „${member.name}“ in „${newName}“ umbenannt`,
             });
             current = { ...current, name: newName };
+        }
+
+        if (input.color !== undefined && input.color !== member.color) {
+            tx.update(members).set({ color: input.color }).where(eq(members.id, member.id)).run();
+            logChange(tx, {
+                groupId: group.id,
+                memberId: actorId,
+                entity: 'member',
+                entityId: member.id,
+                action: 'recolored',
+                summary: `hat die Farbe von „${current.name}“ auf ${memberColorName(input.color)} geändert`,
+            });
+            current = { ...current, color: input.color };
         }
 
         if (input.active === false && current.active) {
