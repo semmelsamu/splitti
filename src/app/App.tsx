@@ -10,6 +10,7 @@ import { Overview } from './screens/Overview';
 import { ReceiptDetail } from './screens/ReceiptDetail';
 import { Scan } from './screens/Scan';
 import { Settings } from './screens/Settings';
+import { Settle } from './screens/Settle';
 import { SplitReceipt } from './screens/SplitReceipt';
 import { Start } from './screens/Start';
 import { Screen } from './ui';
@@ -22,6 +23,7 @@ const GROUP_SCREENS: { pattern: string; render: (params: Record<string, string>)
     { pattern: '/g/:token/scan', render: () => <Scan /> },
     { pattern: '/g/:token/manuell', render: () => <ManualEntry /> },
     { pattern: '/g/:token/verlauf', render: () => <History /> },
+    { pattern: '/g/:token/begleichen', render: () => <Settle /> },
     // The fixed word "neu" must be tried before the receipt number.
     { pattern: '/g/:token/beleg/neu', render: () => <SplitReceipt key="neu" /> },
     {

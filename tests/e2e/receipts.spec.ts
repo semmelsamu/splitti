@@ -428,7 +428,7 @@ test.describe('Manueller Eintrag', () => {
   test.beforeEach(async ({ page, request }) => {
     ({ token } = await createGroup(request, 'WG', ['Samu', 'Karl', 'Rosi', 'Toni']));
     await openGroupAs(page, token, 'Samu');
-    await page.getByRole('button', { name: 'Manuell' }).click();
+    await page.getByRole('button', { name: 'Manuell', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Manueller Eintrag' })).toBeVisible();
   });
 

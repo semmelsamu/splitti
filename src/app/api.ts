@@ -3,14 +3,16 @@
 
 import type {
   ApiErrorDto,
-  ChangeDto,
   CreatedGroupDto,
   GroupDto,
+  HistoryDto,
   MemberDto,
+  PaymentInput,
   ReceiptDetailDto,
   ReceiptInput,
   ReceiptSummaryDto,
   ScanDto,
+  TransferDto,
 } from '../shared/api-types';
 import { knownGroup } from './device';
 
@@ -117,8 +119,16 @@ export const api = {
   restoreReceipt: (token: string, id: number) =>
     request<ReceiptDetailDto>(`${group(token)}/receipts/${id}/restore`, { method: 'POST', token }),
 
-  getChanges: (token: string) =>
-    request<{ changes: ChangeDto[] }>(`${group(token)}/changes`, { token }),
+  getHistory: (token: string) => request<HistoryDto>(`${group(token)}/changes`, { token }),
+
+  getSettlement: (token: string) =>
+    request<{ transfers: TransferDto[] }>(`${group(token)}/settlement`, { token }),
+
+  createPayment: (token: string, input: PaymentInput) =>
+    request<{ id: number }>(`${group(token)}/payments`, { method: 'POST', body: input, token }),
+
+  deletePayment: (token: string, id: number) =>
+    request<{ ok: true }>(`${group(token)}/payments/${id}`, { method: 'DELETE', token }),
 
   /** Address of the photo of a saved receipt. */
   receiptImageUrl: (token: string, id: number) => `${group(token)}/receipts/${id}/image`,

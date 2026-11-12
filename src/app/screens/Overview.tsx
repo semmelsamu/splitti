@@ -94,6 +94,9 @@ export function Overview() {
             <div className="flex-1">
               <SectionTitle>Salden</SectionTitle>
             </div>
+            <Button variant="text" onClick={() => navigate(`/g/${group.token}/begleichen`)}>
+              Begleichen
+            </Button>
           </div>
           <Card>
             {rows.map((member) => {

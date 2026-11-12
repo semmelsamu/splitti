@@ -76,3 +76,12 @@ Lücken im Plan, die beim Bauen entschieden wurden, jeweils mit Begründung. Der
 | 48 | Gelöschte Belege | Zählen nicht mehr, behalten Bild und Positionen, lassen sich ansehen und wiederherstellen, aber erst nach dem Wiederherstellen ändern. | Löschen geschieht nur über den Zeitstempel, wie im Plan. |
 | 49 | Kamera | Live-Bild über die Kamera-Schnittstelle des Browsers mit Rahmen wie im Wireframe; das Foto kommt in voller Auflösung, wo der Browser das anbietet. Ohne HTTPS, ohne Erlaubnis oder ohne Kamera öffnet der Auslöser die Kamera-App des Handys; „Aus Galerie“ geht immer. | Die Kamera-Schnittstelle gibt es nur über HTTPS; die App soll auch davor und daneben benutzbar sein. |
 | 50 | Wie ausführlich ist der Verlauf eines Belegs? | Ein Satz je Art der Änderung und Position („hat „Salami vegan“ neu zugeordnet“); ab vier gleichartigen Änderungen eine Zahl („hat 6 Positionen neu zugeordnet“). Speichern ohne Änderung hinterlässt keinen Eintrag. | Lesbar bleiben, wie im Wireframe gezeigt. |
+
+## Salden (Meilenstein 6)
+
+| Nr. | Frage | Entscheidung | Begründung |
+| --- | --- | --- | --- |
+| 51 | Zahlungen sollen im Verlauf stehen und sich dort löschen lassen, die API-Tabelle hat aber keine Liste der Zahlungen. | `GET /api/groups/:token/changes` liefert neben dem Änderungsverlauf auch die Zahlungen der Gruppe. Die Seite „Belege und Verlauf“ zeigt sie in einem eigenen Abschnitt mit „Löschen“. | Kein zusätzlicher Endpunkt nötig; der Verlauf ist laut Wireframe der Ort, an dem Zahlungen wieder gelöscht werden. |
+| 52 | Zahlungen löschen | Wie Belege nur über einen Zeitstempel; eine gelöschte Zahlung bleibt durchgestrichen sichtbar. Wiederherstellen gibt es nicht (im Plan nur für Belege); die Zahlung lässt sich neu eintragen. | Entspricht Schema (`deleted_at`) und API-Tabelle. |
+| 53 | „Als bezahlt eintragen“ | Trägt die vorgeschlagene Überweisung mit heutigem Datum ein. „Andere Zahlung eintragen“ erlaubt beliebige Personen, Beträge (auch Teilbeträge) und ein Datum. | Wireframe. |
+| 54 | Entfernte Mitglieder mit offenem Saldo | Bleiben in Salden („(entfernt)“) und in den Überweisungsvorschlägen sichtbar, bis sie ausgeglichen sind; für neue Einträge sind sie nicht wählbar. | Sonst gingen Schulden beim Auszug still verloren, und die Salden ergäben sichtbar nicht mehr null. |

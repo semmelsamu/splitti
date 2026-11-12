@@ -120,3 +120,31 @@ export interface ReceiptDetailDto extends ReceiptSummaryDto {
   shares: { memberId: number; cents: number }[];
   history: ChangeDto[];
 }
+
+/** A proposed transfer that helps to settle the group. */
+export interface TransferDto {
+  from: number;
+  to: number;
+  amountCents: number;
+}
+
+export interface PaymentInput {
+  from: number;
+  to: number;
+  amountCents: number;
+  /** YYYY-MM-DD */
+  date: string;
+}
+
+export interface PaymentDto extends PaymentInput {
+  id: number;
+  createdAt: string;
+  /** ISO timestamp if the payment was deleted. */
+  deletedAt: string | null;
+}
+
+/** GET …/changes: the change log, plus the payments it refers to. */
+export interface HistoryDto {
+  changes: ChangeDto[];
+  payments: PaymentDto[];
+}
