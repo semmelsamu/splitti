@@ -6,6 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import sharp from 'sharp';
 import { dataDir } from './config.mjs';
 import { notFound } from './http';
 
@@ -62,6 +63,17 @@ export function readReceiptImage(imagePath: string): Buffer {
         throw notFound('Dieses Zettelbild gibt es nicht.');
     }
     return fs.readFileSync(file);
+}
+
+/** Width of the small version for lists: several times the tile, for sharp phone screens. */
+const SMALL_WIDTH = 160;
+
+/** A small version of a receipt image, so that a list does not load full photos. */
+export function smallImage(jpeg: Buffer): Promise<Buffer> {
+    return sharp(jpeg)
+        .resize({ width: SMALL_WIDTH, withoutEnlargement: true })
+        .jpeg({ quality: 70 })
+        .toBuffer();
 }
 
 /** Removes draft images of all groups that are older than a day. */

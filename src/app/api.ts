@@ -148,6 +148,10 @@ export const api = {
     /** Address of the photo of a saved receipt. */
     receiptImageUrl: (token: string, id: number) => `${group(token)}/receipts/${id}/image`,
 
+    /** Address of a small version of that photo, for lists. */
+    receiptThumbUrl: (token: string, id: number) =>
+        `${group(token)}/receipts/${id}/image?size=small`,
+
     /** Address of the photo of a scan that is not saved yet. */
     draftImageUrl: (token: string, imageId: string) =>
         `${group(token)}/scan/${encodeURIComponent(imageId)}`,

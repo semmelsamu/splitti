@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { type APIRequestContext, expect, test } from '@playwright/test';
+import sharp from 'sharp';
 import { as, createGroup, type TestGroup } from './helpers/api';
 
 const photoA = fs.readFileSync(path.resolve('tests/fixtures/receipts/kaufland-a.png'));
@@ -266,6 +267,7 @@ test.describe('receipts API', () => {
 
         expect((await request.get(base)).status()).toBe(404);
         expect((await request.get(`${base}/image`)).status()).toBe(404);
+        expect((await request.get(`${base}/image?size=small`)).status()).toBe(404);
         expect((await request.delete(base)).status()).toBe(404);
         expect((await request.post(`${base}/restore`)).status()).toBe(404);
         const put = await request.put(base, {
@@ -374,6 +376,21 @@ test.describe('scan API', () => {
         expect(saved.status()).toBe(200);
         expect(saved.headers()['content-type']).toBe('image/jpeg');
         expect((await saved.body()).subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+
+        // Lists get a small version: the same picture at a fraction of the size.
+        const small = await request.get(
+            `/api/groups/${group.token}/receipts/${id}/image?size=small`,
+        );
+        expect(small.status()).toBe(200);
+        expect(small.headers()['content-type']).toBe('image/jpeg');
+        const [full, thumb] = await Promise.all([
+            sharp(await saved.body()).metadata(),
+            sharp(await small.body()).metadata(),
+        ]);
+        expect(thumb.format).toBe('jpeg');
+        expect(thumb.width).toBe(160);
+        expect(thumb.height / thumb.width).toBeCloseTo(full.height / full.width, 1);
+        expect((await small.body()).length).toBeLessThan((await saved.body()).length / 10);
         // The draft is gone once it belongs to a receipt.
         expect(
             (await request.get(`/api/groups/${group.token}/scan/${draft.imageId}`)).status(),

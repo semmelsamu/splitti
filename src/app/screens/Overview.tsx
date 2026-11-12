@@ -7,6 +7,7 @@ import { Card } from '../../components/Card';
 import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { IconButton } from '../../components/IconButton';
+import { ReceiptThumb } from '../../components/ReceiptThumb';
 import { Screen } from '../../components/Screen';
 import { SectionTitle } from '../../components/SectionTitle';
 import { useToast } from '../../components/useToast';
@@ -148,14 +149,12 @@ export function Overview() {
                                     }
                                     className="flex min-h-16 cursor-pointer items-center gap-3 border-0 bg-transparent px-3.5 py-2 text-left text-[15px] text-ink"
                                 >
-                                    {/* A dashed tile marks receipts with a photo, as in the wireframe. */}
-                                    <span
-                                        aria-hidden="true"
-                                        className={`box-border h-[42px] w-8 shrink-0 rounded-[3px] ${
+                                    <ReceiptThumb
+                                        src={
                                             receipt.hasImage
-                                                ? 'border border-dashed border-field'
-                                                : ''
-                                        }`}
+                                                ? api.receiptThumbUrl(group.token, receipt.id)
+                                                : null
+                                        }
                                     />
                                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                                         <span className="truncate font-medium">

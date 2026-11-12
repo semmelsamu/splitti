@@ -1,5 +1,6 @@
 // Milestone 5: upload a test receipt, assign, save, change, delete, restore.
 
+import fs from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
 import { createGroup } from './helpers/api';
@@ -180,6 +181,77 @@ test.describe('Belege', () => {
         await page.getByRole('button', { name: 'Beleg wiederherstellen' }).click();
         await expect(page.getByRole('button', { name: 'Beleg löschen' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Bearbeiten' })).toBeVisible();
+    });
+});
+
+test.describe('Belegliste der Gruppenübersicht', () => {
+    test('zeigt das Zettelfoto als Vorschau und nie einen leeren Rahmen', async ({
+        page,
+        request,
+    }) => {
+        test.setTimeout(SCAN_TIMEOUT);
+        const group = await createGroup(request, 'WG', ['Samu', 'Karl']);
+        const base = `/api/groups/${group.token}`;
+        // A scanned receipt …
+        const draft = await (
+            await request.post(`${base}/scan`, {
+                data: fs.readFileSync(PHOTO_A),
+                headers: { 'Content-Type': 'image/png' },
+                timeout: SCAN_TIMEOUT,
+            })
+        ).json();
+        const item = {
+            label: 'Einkauf',
+            amountCents: 1163,
+            kind: 'item',
+            memberIds: [group.ids.Karl],
+        };
+        const scanned = await request.post(`${base}/receipts`, {
+            data: {
+                paidBy: group.ids.Samu,
+                date: '2026-11-09',
+                merchant: 'Kaufland',
+                source: 'scan',
+                detectedTotalCents: 1163,
+                imageId: draft.imageId,
+                items: [item],
+            },
+        });
+        expect(scanned.status()).toBe(201);
+        // … and an entry without a photo.
+        const manual = await request.post(`${base}/receipts`, {
+            data: {
+                paidBy: group.ids.Samu,
+                date: '2026-11-10',
+                merchant: 'Internet',
+                source: 'manual',
+                detectedTotalCents: null,
+                items: [item],
+            },
+        });
+        expect(manual.status()).toBe(201);
+
+        await openGroupAs(page, group.token, 'Samu');
+        const latest = page.getByRole('region', { name: 'Letzte Belege' });
+
+        // The photo is there and loaded, in the small version.
+        const photo = latest.getByRole('button', { name: /Kaufland/ }).locator('img');
+        await expect(photo).toHaveAttribute('src', /\/image\?size=small$/);
+        await expect
+            .poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth))
+            .toBe(160);
+
+        // No photo: a quiet sign, not a frame waiting for a picture.
+        const entry = latest.getByRole('button', { name: /Internet/ });
+        await expect(entry.locator('img')).toHaveCount(0);
+        await expect(entry.locator('svg.lucide-receipt-text')).toBeVisible();
+        const dashed = await latest.evaluate(
+            (list) =>
+                [...list.querySelectorAll('*')].filter((el) =>
+                    getComputedStyle(el).borderTopStyle.includes('dashed'),
+                ).length,
+        );
+        expect(dashed).toBe(0);
     });
 });
 
