@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Splitti Wireframe – Manueller Eintrag</title>
+<style>body{margin:0;background:#e5e5e5;display:flex;justify-content:center;font-family:Inter,system-ui,sans-serif}a{color:#1d4ed8}</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; color: #1a1a1a; font-family: Inter, sans-serif; font-size: 15px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px 8px 8px; border-bottom: 1px solid #d4d4d4">
+<button aria-label="Zurück" style="width: 44px; height: 44px; border: none; background: none; color: #1a1a1a; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<h1 style="margin: 0; font-size: 17px; font-weight: 600; flex: 1">Manueller Eintrag</h1>
+</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 16px">
+<div style="display: flex; border: 1px solid #6b6b6b; border-radius: 8px; overflow: hidden">
+<button aria-pressed="true" style="flex: 1; min-height: 44px; border: none; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 14px; font-weight: 600">Ein Betrag</button>
+<button aria-pressed="false" style="flex: 1; min-height: 44px; border: none; background: #ffffff; color: #1a1a1a; font-family: inherit; font-size: 14px">Beleg mit Positionen</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="m-name" style="font-size: 13px; font-weight: 600; color: #595959">Bezeichnung</label>
+<input id="m-name" type="text" value="Internet" style="min-height: 48px; box-sizing: border-box; padding: 0 12px; border: 1px solid #6b6b6b; border-radius: 8px; font-family: inherit; font-size: 16px; color: #1a1a1a">
+</div>
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+<label for="m-amount" style="font-size: 13px; font-weight: 600; color: #595959">Betrag in €</label>
+<input id="m-amount" type="text" inputmode="decimal" value="40,00" style="min-height: 48px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #6b6b6b; border-radius: 8px; font-family: inherit; font-size: 16px; color: #1a1a1a">
+</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+<label for="m-date" style="font-size: 13px; font-weight: 600; color: #595959">Datum</label>
+<input id="m-date" type="text" value="[heute]" style="min-height: 48px; width: 100%; box-sizing: border-box; padding: 0 12px; border: 1px solid #6b6b6b; border-radius: 8px; font-family: inherit; font-size: 16px; color: #1a1a1a">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px; font-weight: 600; color: #595959">Bezahlt von</div>
+<button style="min-height: 48px; padding: 0 12px; border: 1px solid #6b6b6b; border-radius: 8px; background: #ffffff; color: #1a1a1a; font-family: inherit; font-size: 16px; text-align: left">Karl</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px; font-weight: 600; color: #595959">Aufteilen auf</div>
+<div style="display: flex; gap: 6px">
+<button aria-pressed="true" style="min-height: 44px; padding: 0 12px; border: 1px solid #1d4ed8; border-radius: 22px; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600">Du</button>
+<button aria-pressed="true" style="min-height: 44px; padding: 0 12px; border: 1px solid #1d4ed8; border-radius: 22px; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600">Karl</button>
+<button aria-pressed="true" style="min-height: 44px; padding: 0 12px; border: 1px solid #1d4ed8; border-radius: 22px; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600">Rosi</button>
+<button aria-pressed="true" style="min-height: 44px; padding: 0 12px; border: 1px solid #1d4ed8; border-radius: 22px; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600">[Name]</button>
+<div style="flex: 1"></div>
+<button style="min-height: 44px; padding: 0 10px; border: none; background: none; color: #1d4ed8; font-family: inherit; font-size: 13px; font-weight: 600">alle</button>
+</div>
+</div>
+<p style="margin: 0; font-size: 13px; color: #595959">„Beleg mit Positionen“ öffnet einen leeren Beleg im Aufteilungs-Screen, in dem du die Positionen selbst einträgst.</p>
+</div>
+<div style="padding: 12px 16px 20px; border-top: 1px solid #d4d4d4; background: #f5f5f5; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; color: #595959">4 Personen · je 10,00 €</div>
+<button style="min-height: 48px; border: none; border-radius: 8px; background: #1d4ed8; color: #ffffff; font-family: inherit; font-size: 16px; font-weight: 600">Speichern</button>
+</div>
+</div>
+</body>
+</html>

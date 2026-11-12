@@ -1,0 +1,86 @@
+{
+  "merchant": "Kaufland",
+  "date": "2026-11-09",
+  "detectedTotalCents": 2829,
+  "taxGrossCents": {
+    "A": 679,
+    "B": 2150
+  },
+  "items": [
+    {
+      "label": "KLC.Käseaufschnitt",
+      "amountCents": 189,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "KLC TaTü 4lg 15x10",
+      "amountCents": 175,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "KLC.Backpapier",
+      "amountCents": 79,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "Teek.Türk.Apfel",
+      "amountCents": 119,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Teek.Strawb.Chees.",
+      "amountCents": 249,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "K.Sandwichtoast VK",
+      "amountCents": 249,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Ostm.Knoblauch",
+      "amountCents": 229,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "KLC Vollwaschm.",
+      "amountCents": 425,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "Meggle Die Vegane",
+      "amountCents": 209,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Barilla Pesto Ros.",
+      "amountCents": 564,
+      "kind": "item",
+      "taxCode": "B",
+      "quantity": 3,
+      "unitPriceCents": 188
+    },
+    {
+      "label": "Ba.Pesto getr.Tom.",
+      "amountCents": 188,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Äpfel Pink Lady kg",
+      "amountCents": 154,
+      "kind": "item",
+      "taxCode": "B",
+      "weightKg": 0.44
+    }
+  ]
+}

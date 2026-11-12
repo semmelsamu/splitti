@@ -1,0 +1,51 @@
+{
+  "merchant": "Kaufland",
+  "date": null,
+  "detectedTotalCents": 1163,
+  "taxGrossCents": {
+    "A": 95,
+    "B": 1068
+  },
+  "items": [
+    {
+      "label": "KLC.Nougat Pockets",
+      "amountCents": 279,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "KVeg.No Milk",
+      "amountCents": 95,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "Barilla Girandole",
+      "amountCents": 300,
+      "kind": "item",
+      "taxCode": "B",
+      "quantity": 3,
+      "unitPriceCents": 100
+    },
+    {
+      "label": "Hauchgenuss vegan",
+      "amountCents": 200,
+      "kind": "item",
+      "taxCode": "B",
+      "quantity": 2,
+      "unitPriceCents": 100
+    },
+    {
+      "label": "Salami vegan",
+      "amountCents": 100,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "KLC.Käseaufschnitt",
+      "amountCents": 189,
+      "kind": "item",
+      "taxCode": "B"
+    }
+  ]
+}

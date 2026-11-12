@@ -1,0 +1,99 @@
+{
+  "merchant": "Kaufland",
+  "date": "2026-10-27",
+  "detectedTotalCents": 3022,
+  "taxGrossCents": {
+    "A": 1020,
+    "B": 2002
+  },
+  "items": [
+    {
+      "label": "KLC.Nougat Pockets",
+      "amountCents": 279,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Ofenfr.Rucolapesto",
+      "amountCents": 179,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Tradizion.Margher.",
+      "amountCents": 179,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Paul. Spezi Zero",
+      "amountCents": 95,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "Pfandartikel",
+      "amountCents": 25,
+      "kind": "deposit",
+      "taxCode": "A"
+    },
+    {
+      "label": "Iglo Brokkoli",
+      "amountCents": 279,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Red Bull Energy",
+      "amountCents": 176,
+      "kind": "item",
+      "taxCode": "A",
+      "quantity": 2,
+      "unitPriceCents": 88
+    },
+    {
+      "label": "Pfandartikel",
+      "amountCents": 50,
+      "kind": "deposit",
+      "taxCode": "A",
+      "quantity": 2,
+      "unitPriceCents": 25
+    },
+    {
+      "label": "KVeg.No Milk",
+      "amountCents": 95,
+      "kind": "item",
+      "taxCode": "A"
+    },
+    {
+      "label": "Rotbusch Sahne-Ka.",
+      "amountCents": 249,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Maultaschen vegan",
+      "amountCents": 229,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Kartoffeln 2,5kg",
+      "amountCents": 379,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Kveg. Tofu Natur",
+      "amountCents": 229,
+      "kind": "item",
+      "taxCode": "B"
+    },
+    {
+      "label": "Gelbstecker 10 st.",
+      "amountCents": 579,
+      "kind": "item",
+      "taxCode": "A"
+    }
+  ]
+}
