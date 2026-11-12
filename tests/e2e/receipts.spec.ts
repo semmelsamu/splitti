@@ -471,6 +471,19 @@ test.describe('Manueller Eintrag', () => {
         );
     });
 
+    test('„Bezahlt von“ zeigt in beiden Ansichten, dass sich eine Auswahl öffnet', async ({
+        page,
+    }) => {
+        const payer = page.getByRole('button', { name: /^Bezahlt von Du/ });
+        await expect(payer.locator('svg.lucide-chevron-down')).toBeVisible();
+
+        await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();
+        await expect(page.getByText('Der Beleg hat noch keine Positionen')).toBeVisible();
+        await expect(payer.locator('svg.lucide-chevron-down')).toBeVisible();
+        await payer.click();
+        await expect(page.getByRole('dialog', { name: 'Bezahlt von' })).toBeVisible();
+    });
+
     test('ein von Hand angelegter Beleg mit Positionen', async ({ page }) => {
         await page.getByLabel('Bezeichnung').fill('Wochenmarkt');
         await page.getByRole('button', { name: 'Beleg mit Positionen' }).click();

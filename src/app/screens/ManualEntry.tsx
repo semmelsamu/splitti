@@ -2,6 +2,7 @@
 // Either one amount shared by some people, or an empty receipt whose
 // positions are typed in on the split screen.
 
+import { ChevronDownIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { ErrorNote } from '../../components/ErrorNote';
@@ -137,9 +138,11 @@ export function ManualEntry() {
                         type="button"
                         onClick={() => setChoosingPayer(true)}
                         aria-label={`Bezahlt von ${group.label(paidBy)}, ändern`}
-                        className="min-h-12 cursor-pointer rounded-lg border border-field bg-white px-3 text-left text-base text-ink"
+                        className="flex min-h-12 cursor-pointer items-center gap-2 rounded-lg border border-field bg-white px-3 text-left text-base text-ink"
                     >
-                        {group.label(paidBy)}
+                        <span className="min-w-0 flex-1 truncate">{group.label(paidBy)}</span>
+                        {/* Tells that a choice opens. */}
+                        <ChevronDownIcon size={18} className="shrink-0 text-muted" />
                     </button>
                 </div>
 

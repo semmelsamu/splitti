@@ -2,7 +2,7 @@
 // (wireframe beleg-aufteilen.html). Used for a fresh scan, for a manual
 // receipt with positions, and for changing a saved receipt.
 
-import { PencilIcon } from 'lucide-react';
+import { ChevronDownIcon, PencilIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Chip';
@@ -236,11 +236,15 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
                     <button
                         type="button"
                         onClick={() => setChoosingPayer(true)}
-                        className="min-h-11 shrink-0 cursor-pointer rounded-lg border border-field bg-white px-3 text-left text-[13px] text-ink"
+                        className="flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-field bg-white px-3 text-left text-[13px] text-ink"
                     >
-                        Bezahlt von
-                        <br />
-                        <strong>{group.label(draft.paidBy)}</strong>
+                        <span>
+                            Bezahlt von
+                            <br />
+                            <strong>{group.label(draft.paidBy)}</strong>
+                        </span>
+                        {/* Tells that a choice opens. */}
+                        <ChevronDownIcon size={16} className="shrink-0 text-muted" />
                     </button>
                 </div>
             }
