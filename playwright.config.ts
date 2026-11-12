@@ -8,10 +8,12 @@ const baseURL = `http://127.0.0.1:${port}`;
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
+  // The server recognises one receipt at a time; more workers only queue up there.
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: !!process.env.CI,
   retries: 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
-  timeout: 60_000,
+  timeout: 120_000,
   use: {
     baseURL,
     locale: 'de-DE',

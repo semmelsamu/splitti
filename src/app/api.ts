@@ -1,7 +1,17 @@
 // The UI's only way to the server. Every call names the group by its token;
 // the member this device acts as travels in a header for the change log.
 
-import type { ApiErrorDto, CreatedGroupDto, GroupDto, MemberDto } from '../shared/api-types';
+import type {
+  ApiErrorDto,
+  ChangeDto,
+  CreatedGroupDto,
+  GroupDto,
+  MemberDto,
+  ReceiptDetailDto,
+  ReceiptInput,
+  ReceiptSummaryDto,
+  ScanDto,
+} from '../shared/api-types';
 import { knownGroup } from './device';
 
 export class ApiRequestError extends Error {
@@ -84,7 +94,83 @@ export const api = {
       body: change,
       token,
     }),
+
+  listReceipts: (token: string) =>
+    request<{ receipts: ReceiptSummaryDto[] }>(`${group(token)}/receipts`, { token }),
+
+  getReceipt: (token: string, id: number) =>
+    request<ReceiptDetailDto>(`${group(token)}/receipts/${id}`, { token }),
+
+  createReceipt: (token: string, input: ReceiptInput) =>
+    request<{ id: number }>(`${group(token)}/receipts`, { method: 'POST', body: input, token }),
+
+  updateReceipt: (token: string, id: number, input: ReceiptInput) =>
+    request<ReceiptDetailDto>(`${group(token)}/receipts/${id}`, {
+      method: 'PUT',
+      body: input,
+      token,
+    }),
+
+  deleteReceipt: (token: string, id: number) =>
+    request<{ ok: true }>(`${group(token)}/receipts/${id}`, { method: 'DELETE', token }),
+
+  restoreReceipt: (token: string, id: number) =>
+    request<ReceiptDetailDto>(`${group(token)}/receipts/${id}/restore`, { method: 'POST', token }),
+
+  getChanges: (token: string) =>
+    request<{ changes: ChangeDto[] }>(`${group(token)}/changes`, { token }),
+
+  /** Address of the photo of a saved receipt. */
+  receiptImageUrl: (token: string, id: number) => `${group(token)}/receipts/${id}/image`,
+
+  /** Address of the photo of a scan that is not saved yet. */
+  draftImageUrl: (token: string, imageId: string) =>
+    `${group(token)}/scan/${encodeURIComponent(imageId)}`,
 };
+
+/**
+ * Uploads a receipt photo for recognition. XMLHttpRequest instead of fetch,
+ * because only it reports how much of the upload is done.
+ *
+ * @param onUploaded Share of the photo that has reached the server, 0 to 1.
+ */
+export function uploadScan(
+  token: string,
+  photo: Blob,
+  onUploaded: (share: number) => void,
+): Promise<ScanDto> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${group(token)}/scan`);
+    xhr.responseType = 'json';
+    xhr.setRequestHeader('Content-Type', photo.type || 'image/jpeg');
+    const memberId = knownGroup(token)?.memberId;
+    if (memberId) xhr.setRequestHeader('X-Splitti-Member', String(memberId));
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) onUploaded(event.loaded / event.total);
+    };
+    xhr.upload.onload = () => onUploaded(1);
+    xhr.onerror = () =>
+      reject(
+        new ApiRequestError(0, 'offline', 'Keine Verbindung zum Server. Bist du im Heimnetz?'),
+      );
+    xhr.onload = () => {
+      const data = xhr.response as (ScanDto & Partial<ApiErrorDto>) | null;
+      if (xhr.status >= 200 && xhr.status < 300 && data) {
+        resolve(data);
+      } else {
+        reject(
+          new ApiRequestError(
+            xhr.status,
+            data?.error ?? 'error',
+            data?.message ?? 'Die Erkennung hat nicht geklappt. Versuch es noch einmal.',
+          ),
+        );
+      }
+    };
+    xhr.send(photo);
+  });
+}
 
 /** Message for the user from whatever was thrown. */
 export function errorMessage(error: unknown): string {

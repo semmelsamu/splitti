@@ -19,6 +19,8 @@ interface ScreenProps {
   title: ReactNode;
   /** Path the back button leads to; without it there is no back button. */
   back?: string;
+  /** Called instead of going to `back`, e.g. to ask before unsaved work is lost. */
+  onBack?: () => void;
   /** Buttons at the right end of the title bar. */
   actions?: ReactNode;
   /** Grey bar below the title, e.g. the receipt summary. */
@@ -33,6 +35,7 @@ interface ScreenProps {
 export function Screen({
   title,
   back,
+  onBack,
   actions,
   banner,
   footer,
@@ -48,7 +51,7 @@ export function Screen({
         }`}
       >
         {back && (
-          <IconButton label="Zurück" onClick={() => navigate(back)}>
+          <IconButton label="Zurück" onClick={() => (onBack ? onBack() : navigate(back))}>
             <ChevronLeft />
           </IconButton>
         )}
