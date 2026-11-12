@@ -1,12 +1,12 @@
 // Screen 1: the groups this device knows (wireframe start.html).
 
+import { ChevronRightIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { Hint } from '../../components/Hint';
-import { ChevronRight } from '../../components/icons';
 import { Screen } from '../../components/Screen';
 import { SectionTitle } from '../../components/SectionTitle';
 import { TextField } from '../../components/TextField';
@@ -125,7 +125,7 @@ export function Start() {
                                                 'Server nicht erreichbar'}
                                         </span>
                                     </span>
-                                    <ChevronRight />
+                                    <ChevronRightIcon size={18} />
                                 </button>
                             );
                         })}

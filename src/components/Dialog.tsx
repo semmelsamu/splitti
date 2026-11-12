@@ -1,6 +1,6 @@
+import { XIcon } from 'lucide-react';
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 import { IconButton } from './IconButton';
-import { CloseIcon } from './icons';
 
 interface DialogProps {
     title: string;
@@ -46,7 +46,7 @@ export function Dialog({ title, onClose, children }: DialogProps) {
                         {title}
                     </h2>
                     <IconButton label="Schließen" onClick={onClose} className="-mr-2">
-                        <CloseIcon />
+                        <XIcon size={18} />
                     </IconButton>
                 </div>
                 {children}

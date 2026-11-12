@@ -96,3 +96,11 @@ Diese Punkte brauchen das echte Gerät oder den echten Server und sind offen, bi
 2. Auf dem Home-Server installieren (README, „Installation“), Proxy Host und Pi-hole-Namen einrichten.
 3. Am Handy über HTTPS: Gruppe anlegen, einen frischen Kaufland-Zettel scannen, als App installieren. Die offenen Punkte aus der Tabelle oben dabei abhaken.
 4. Liest die Erkennung einen Zettel schlecht: `SPLITTI_OCR_DEBUG_DIR` setzen (README, „Fehlersuche“) und das Foto samt abgetippter Vorlage als weiteren Testzettel unter `tests/fixtures/receipts/` ablegen.
+
+## Nachtrag vom 13.11.2026
+
+Der Bericht oben beschreibt den Stand von Version 0.1. Seitdem:
+
+- Der Stand ist auf GitHub und als Version 0.1 veröffentlicht (Tag `v0.1.0`). Punkt 7 unter „Die wichtigsten Entscheidungen“ und Schritt 1 unter „Nächste Schritte“ sind damit erledigt.
+- Der Workflow auf GitHub ist trotz Push noch nicht gelaufen: Die Jobs wurden nicht gestartet. Der Punkt „GitHub Actions“ bleibt offen.
+- Aufgeräumt nach 0.1 (Entscheidungen Nr. 59 bis 61): Einrückung mit 4 Leerzeichen, Bausteine der Oberfläche unter `src/components/`, Icons aus `lucide-react`.

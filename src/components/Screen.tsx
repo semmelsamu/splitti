@@ -2,10 +2,10 @@
 // column in phone format, title bar on top, the main action in a grey bar at
 // the bottom.
 
+import { ChevronLeftIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { navigate } from '../app/router';
 import { IconButton } from './IconButton';
-import { ChevronLeft } from './icons';
 
 interface ScreenProps {
     title: ReactNode;
@@ -44,7 +44,7 @@ export function Screen({
             >
                 {back && (
                     <IconButton label="Zurück" onClick={() => (onBack ? onBack() : navigate(back))}>
-                        <ChevronLeft />
+                        <ChevronLeftIcon size={22} />
                     </IconButton>
                 )}
                 <Title className="m-0 min-w-0 flex-1 truncate text-[17px] font-semibold">

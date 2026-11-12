@@ -1,6 +1,7 @@
 // Group settings, a sub-page of the overview: name, members, invitation link,
 // and which member this device is.
 
+import { PencilIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -8,7 +9,6 @@ import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { Hint } from '../../components/Hint';
 import { IconButton } from '../../components/IconButton';
-import { CloseIcon, PencilIcon } from '../../components/icons';
 import { Screen } from '../../components/Screen';
 import { SectionTitle } from '../../components/SectionTitle';
 import { TextField } from '../../components/TextField';
@@ -127,7 +127,7 @@ export function Settings() {
                                     className="text-muted"
                                     onClick={() => setRenaming(member)}
                                 >
-                                    <PencilIcon />
+                                    <PencilIcon size={18} />
                                 </IconButton>
                                 {/* Nobody removes themselves by accident: change the identity first. */}
                                 {member.id === group.me.id ? (
@@ -138,7 +138,7 @@ export function Settings() {
                                         className="text-muted"
                                         onClick={() => setRemoving(member)}
                                     >
-                                        <CloseIcon />
+                                        <XIcon size={18} />
                                     </IconButton>
                                 )}
                             </div>

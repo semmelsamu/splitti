@@ -2,13 +2,13 @@
 // (wireframe beleg-aufteilen.html). Used for a fresh scan, for a manual
 // receipt with positions, and for changing a saved receipt.
 
+import { PencilIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Chip';
 import { Dialog } from '../../components/Dialog';
 import { ErrorNote } from '../../components/ErrorNote';
 import { IconButton } from '../../components/IconButton';
-import { PencilIcon } from '../../components/icons';
 import { Loading } from '../../components/Loading';
 import { MemberChips } from '../../components/MemberChips';
 import { PayerDialog } from '../../components/PayerDialog';
@@ -381,7 +381,7 @@ function Editor({ draft, setDraft, backPath, changed }: EditorProps) {
                                     className="text-muted"
                                     onClick={() => setEditingItem(item)}
                                 >
-                                    <PencilIcon />
+                                    <PencilIcon size={18} />
                                 </IconButton>
                             </div>
                             <MemberChips

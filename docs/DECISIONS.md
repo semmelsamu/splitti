@@ -94,3 +94,13 @@ Lücken im Plan, die beim Bauen entschieden wurden, jeweils mit Begründung. Der
 | 56 | Der erste Besuch lädt die Hülle, bevor der Service Worker zuständig ist. | Die Seite übergibt dem Service Worker nach dessen Start die Liste der Dateien, die sie geladen hat; er legt sie ab. | Schon nach dem ersten Besuch ist die Hülle vollständig auf dem Gerät, ohne dass eine Dateiliste im Build gepflegt werden muss. |
 | 57 | Icon und Manifest | Eigene Zeichnung (Kassenzettel mit zwei Mitglieder-Chips) in `scripts/generate-icons.mjs`, daraus 192 und 512 Pixel, eine „maskable“-Fassung und das Icon für iOS. Anzeige `standalone`, Hochformat, Farben aus den Wireframes. | Ein Skript statt handgepflegter Bilddateien; die Größen sind die, die Chrome und iOS für die Installation verlangen. |
 | 58 | Was heißt „Bedienung am Handy-Format“ prüfbar? | Ein Browser-Test geht alle Screens bei 390 × 844 und 360 × 640 durch und verlangt: kein seitliches Scrollen, jede Tippfläche mindestens 44 × 44 Pixel (wie in den Wireframes), Titel und Hauptaktion bleiben beim Scrollen sichtbar. | Macht die Abnahme automatisch; der Test hat zwei zu schmale Tippflächen gefunden, die behoben sind. |
+
+## Aufräumen nach Version 0.1
+
+Keine Lücken im Plan, sondern nachträgliche Vorgaben vom 13.11.2026. Sie stehen hier, damit sie beim Weiterbauen gelten.
+
+| Nr. | Frage | Entscheidung | Begründung |
+| --- | --- | --- | --- |
+| 59 | Einrückung | 4 Leerzeichen statt 2 (Biome, `indentWidth`). Die Dateien, die Biome nicht abdeckt (Astro-Hülle, Manifest, `docker/entrypoint.sh`), folgen von Hand; YAML-Dateien und das Dockerfile bleiben bei 2. | Vorgabe. `compose.yaml` muss der Vorlage wörtlich entsprechen, und für YAML sind 2 Leerzeichen üblich. npm schreibt `package-lock.json` seitdem ebenfalls mit 4 Leerzeichen, weil es die Einrückung von `package.json` übernimmt. |
+| 60 | Wo liegen die Bausteine der Oberfläche? | Unter `src/components/`, eine Datei pro Komponente, ohne Sammeldatei für die Importe. Screens, Router und Gerätespeicher bleiben in `src/app/`; die Hilfsfunktionen zu Mitgliederlisten, die keine Komponenten sind, liegen in `src/app/members.ts`. | Vorgabe; `src/components` ist die Konvention von Astro. Screens sind Seiten der App, keine wiederverwendbaren Bausteine. |
+| 61 | Icons | Aus dem Paket `lucide-react` statt als eigene SVG-Pfade im Code. Das App-Icon bleibt die eigene Zeichnung (Nr. 57). | Vorgabe. Importiert wird pro Icon, ins Bündel kommen nur die benutzten. |

@@ -26,6 +26,9 @@ Selbst gehostete Kostenaufteilungs-App für WGs: Kassenzettel scannen, Positione
 - Der Link-Code im Pfad ist die einzige Berechtigung; jeder Endpunkt prüft, dass angefragte Objekte zur Gruppe gehören.
 - Oberfläche und Meldungen sind auf Deutsch; Code, Bezeichner und Commits auf Englisch.
 - Daten liegen ausschließlich unter `/data` im Container (`./data` auf dem Host, von Git ausgenommen).
+- Bausteine der Oberfläche liegen unter `src/components/`, eine Datei pro Komponente; Screens, Router und Gerätespeicher unter `src/app/`.
+- Icons kommen aus `lucide-react`, nicht als eigene SVG-Pfade.
+- Einrückung: 4 Leerzeichen (Biome); YAML-Dateien und das Dockerfile bleiben bei 2.
 
 ## Betrieb (Zielbild)
 

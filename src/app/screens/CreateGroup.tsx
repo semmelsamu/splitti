@@ -1,12 +1,12 @@
 // Screen 2: create a group (wireframe gruppe-erstellen.html).
 
+import { XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { ErrorNote } from '../../components/ErrorNote';
 import { Hint } from '../../components/Hint';
 import { IconButton } from '../../components/IconButton';
-import { CloseIcon } from '../../components/icons';
 import { Screen } from '../../components/Screen';
 import { TextField } from '../../components/TextField';
 import { api, errorMessage } from '../api';
@@ -105,7 +105,7 @@ export function CreateGroup() {
                                             setMembers(members.filter((other) => other !== member))
                                         }
                                     >
-                                        <CloseIcon />
+                                        <XIcon size={18} />
                                     </IconButton>
                                 </div>
                             ))}
