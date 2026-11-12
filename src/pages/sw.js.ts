@@ -6,11 +6,11 @@ import source from '../sw/service-worker.js?raw';
 export const prerender = true;
 
 const version = new Date()
-  .toISOString()
-  .replace(/[^0-9]/g, '')
-  .slice(0, 14);
+    .toISOString()
+    .replace(/[^0-9]/g, '')
+    .slice(0, 14);
 
 export const GET: APIRoute = () =>
-  new Response(source.replaceAll('__VERSION__', version), {
-    headers: { 'Content-Type': 'text/javascript; charset=utf-8' },
-  });
+    new Response(source.replaceAll('__VERSION__', version), {
+        headers: { 'Content-Type': 'text/javascript; charset=utf-8' },
+    });

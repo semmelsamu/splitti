@@ -14,7 +14,7 @@ const BLUE = '#1d4ed8';
  * @param {boolean} rounded Rounded corners for ordinary icons; maskable icons fill the square.
  */
 function icon(rounded) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="${rounded ? 112 : 0}" fill="${BLUE}"/>
   <path fill="#fff" d="M152 96h208a16 16 0 0 1 16 16v304l-40-28-40 28-40-28-40 28-40-28-40 28V112a16 16 0 0 1 16-16z"/>
   <g fill="${BLUE}">
@@ -36,17 +36,17 @@ await fs.mkdir(path.join(out, 'icons'), { recursive: true });
 await fs.writeFile(path.join(out, 'favicon.svg'), icon(true));
 
 const png = (svg, size, file) =>
-  sharp(Buffer.from(svg))
-    .resize(size, size)
-    .png({ compressionLevel: 9 })
-    .toFile(path.join(out, file));
+    sharp(Buffer.from(svg))
+        .resize(size, size)
+        .png({ compressionLevel: 9 })
+        .toFile(path.join(out, file));
 
 await Promise.all([
-  png(icon(true), 192, 'icons/icon-192.png'),
-  png(icon(true), 512, 'icons/icon-512.png'),
-  // Maskable: the system cuts its own shape out of the full square.
-  png(icon(false), 512, 'icons/icon-maskable-512.png'),
-  // iOS rounds the corners itself and shows transparency as black.
-  png(icon(false), 180, 'icons/apple-touch-icon.png'),
+    png(icon(true), 192, 'icons/icon-192.png'),
+    png(icon(true), 512, 'icons/icon-512.png'),
+    // Maskable: the system cuts its own shape out of the full square.
+    png(icon(false), 512, 'icons/icon-maskable-512.png'),
+    // iOS rounds the corners itself and shows transparency as black.
+    png(icon(false), 180, 'icons/apple-touch-icon.png'),
 ]);
 console.log('Icons written to public/ and public/icons/');

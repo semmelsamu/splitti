@@ -8,15 +8,15 @@ import path from 'node:path';
  * @returns {string}
  */
 export function dataDir() {
-  return path.resolve(process.env.DATA_DIR ?? 'data');
+    return path.resolve(process.env.DATA_DIR ?? 'data');
 }
 
 /** @returns {string} */
 export function databaseFile() {
-  return path.join(dataDir(), 'splitti.db');
+    return path.join(dataDir(), 'splitti.db');
 }
 
 /** @returns {string} */
 export function migrationsDir() {
-  return path.resolve(process.env.MIGRATIONS_DIR ?? 'drizzle');
+    return path.resolve(process.env.MIGRATIONS_DIR ?? 'drizzle');
 }

@@ -5,5 +5,5 @@ import { scanReceipt } from '../../../../../server/scan';
 // request body). Answers with the recognised positions as a draft and a handle
 // for the image; no receipt is saved yet.
 export const POST = groupRoute(async ({ group, request }) => {
-  return json(await scanReceipt(group.id, request));
+    return json(await scanReceipt(group.id, request));
 });

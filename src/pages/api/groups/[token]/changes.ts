@@ -7,9 +7,9 @@ import type { HistoryDto } from '../../../../shared/api-types';
 // The payments come along, because the log is where a payment is deleted again
 // (the plan's API table has no separate list of payments).
 export const GET = groupRoute(({ db, group }) => {
-  const history: HistoryDto = {
-    changes: listChanges(db, group.id),
-    payments: listPayments(db, group),
-  };
-  return json(history);
+    const history: HistoryDto = {
+        changes: listChanges(db, group.id),
+        payments: listPayments(db, group),
+    };
+    return json(history);
 });

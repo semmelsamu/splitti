@@ -5,52 +5,52 @@ import '../styles/global.css';
 // Every app route gets the same shell; the React island does the routing.
 // Paths that look like files are real 404s, not screens.
 if (/\.[a-z0-9]+$/i.test(Astro.url.pathname)) {
-  return new Response(null, { status: 404 });
+    return new Response(null, { status: 404 });
 }
 ---
 
 <!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="Kassenzettel scannen, Positionen auf Mitglieder verteilen, Salden ausgleichen." />
-    <meta name="theme-color" content="#1d4ed8" />
-    <!-- The group link is the key to the group: keep it out of search engines and referrers. -->
-    <meta name="robots" content="noindex, nofollow" />
-    <meta name="referrer" content="no-referrer" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Splitti" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <title>Splitti</title>
-  </head>
-  <body>
-    <App client:only="react" />
-    <noscript>Splitti braucht JavaScript.</noscript>
-    <script>
-      // The service worker keeps the app shell on the device (installable app,
-      // start without connection). Browsers offer it only over HTTPS or on
-      // localhost. Not in development, where a kept shell would hide changes.
-      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-        window.addEventListener('load', async () => {
-          try {
-            await navigator.serviceWorker.register('/sw.js');
-            const registration = await navigator.serviceWorker.ready;
-            // Hand over what this page loaded before the worker was in charge.
-            const urls = performance
-              .getEntriesByType('resource')
-              .map((entry) => entry.name)
-              .filter((name) => name.startsWith(location.origin));
-            registration.active?.postMessage({ type: 'cache-shell', urls });
-          } catch {
-            // Without a service worker Splitti works as an ordinary web page.
-          }
-        });
-      }
-    </script>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="description" content="Kassenzettel scannen, Positionen auf Mitglieder verteilen, Salden ausgleichen." />
+        <meta name="theme-color" content="#1d4ed8" />
+        <!-- The group link is the key to the group: keep it out of search engines and referrers. -->
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="referrer" content="no-referrer" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Splitti" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <title>Splitti</title>
+    </head>
+    <body>
+        <App client:only="react" />
+        <noscript>Splitti braucht JavaScript.</noscript>
+        <script>
+            // The service worker keeps the app shell on the device (installable app,
+            // start without connection). Browsers offer it only over HTTPS or on
+            // localhost. Not in development, where a kept shell would hide changes.
+            if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+                window.addEventListener('load', async () => {
+                    try {
+                        await navigator.serviceWorker.register('/sw.js');
+                        const registration = await navigator.serviceWorker.ready;
+                        // Hand over what this page loaded before the worker was in charge.
+                        const urls = performance
+                            .getEntriesByType('resource')
+                            .map((entry) => entry.name)
+                            .filter((name) => name.startsWith(location.origin));
+                        registration.active?.postMessage({ type: 'cache-shell', urls });
+                    } catch {
+                        // Without a service worker Splitti works as an ordinary web page.
+                    }
+                });
+            }
+        </script>
+    </body>
 </html>

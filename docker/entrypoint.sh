@@ -4,12 +4,12 @@
 set -e
 
 if [ "$(id -u)" = "0" ]; then
-  mkdir -p "$DATA_DIR"
-  owner_uid="$(stat -c %u "$DATA_DIR")"
-  owner_gid="$(stat -c %g "$DATA_DIR")"
-  if [ "$owner_uid" != "0" ]; then
-    exec setpriv --reuid="$owner_uid" --regid="$owner_gid" --clear-groups "$@"
-  fi
+    mkdir -p "$DATA_DIR"
+    owner_uid="$(stat -c %u "$DATA_DIR")"
+    owner_gid="$(stat -c %g "$DATA_DIR")"
+    if [ "$owner_uid" != "0" ]; then
+        exec setpriv --reuid="$owner_uid" --regid="$owner_gid" --clear-groups "$@"
+    fi
 fi
 
 exec "$@"

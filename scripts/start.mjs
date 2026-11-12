@@ -10,16 +10,16 @@ fs.mkdirSync(dataDir(), { recursive: true });
 
 const sqlite = new Database(databaseFile());
 try {
-  migrate(drizzle(sqlite), { migrationsFolder: migrationsDir() });
+    migrate(drizzle(sqlite), { migrationsFolder: migrationsDir() });
 } finally {
-  sqlite.close();
+    sqlite.close();
 }
 console.log(`[splitti] Datenbank bereit: ${databaseFile()}`);
 
 // Node runs as PID 1 in the container and would otherwise ignore the stop signal,
 // so `docker compose down` would wait for its timeout.
 for (const signal of ['SIGTERM', 'SIGINT']) {
-  process.on(signal, () => process.exit(0));
+    process.on(signal, () => process.exit(0));
 }
 
 await import('../dist/server/entry.mjs');

@@ -15,27 +15,27 @@ const DRAFT_LIFETIME_MS = 24 * 60 * 60 * 1000;
 const IMAGE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 function draftDir(groupId: number): string {
-  return path.join(dataDir(), 'drafts', String(groupId));
+    return path.join(dataDir(), 'drafts', String(groupId));
 }
 
 function draftFile(groupId: number, imageId: string): string {
-  // The id is a UUID made here; anything else never touches the file system.
-  if (!IMAGE_ID.test(imageId)) throw notFound('Dieses Zettelbild gibt es nicht.');
-  return path.join(draftDir(groupId), `${imageId}.jpg`);
+    // The id is a UUID made here; anything else never touches the file system.
+    if (!IMAGE_ID.test(imageId)) throw notFound('Dieses Zettelbild gibt es nicht.');
+    return path.join(draftDir(groupId), `${imageId}.jpg`);
 }
 
 /** Stores the JPEG of a scan as a draft and returns its handle. */
 export function saveDraftImage(groupId: number, jpeg: Buffer): string {
-  const imageId = randomUUID();
-  fs.mkdirSync(draftDir(groupId), { recursive: true });
-  fs.writeFileSync(draftFile(groupId, imageId), jpeg);
-  return imageId;
+    const imageId = randomUUID();
+    fs.mkdirSync(draftDir(groupId), { recursive: true });
+    fs.writeFileSync(draftFile(groupId, imageId), jpeg);
+    return imageId;
 }
 
 export function readDraftImage(groupId: number, imageId: string): Buffer {
-  const file = draftFile(groupId, imageId);
-  if (!fs.existsSync(file)) throw notFound('Dieses Zettelbild gibt es nicht mehr.');
-  return fs.readFileSync(file);
+    const file = draftFile(groupId, imageId);
+    if (!fs.existsSync(file)) throw notFound('Dieses Zettelbild gibt es nicht mehr.');
+    return fs.readFileSync(file);
 }
 
 /**
@@ -43,45 +43,46 @@ export function readDraftImage(groupId: number, imageId: string): Buffer {
  * Returns the path to store in the database, relative to the data directory.
  */
 export function adoptDraftImage(groupId: number, imageId: string): string {
-  const source = draftFile(groupId, imageId);
-  if (!fs.existsSync(source)) {
-    throw notFound('Das Zettelbild ist nicht mehr da. Bitte scanne den Zettel noch einmal.');
-  }
-  const relative = path.join('images', String(groupId), `${imageId}.jpg`);
-  const target = path.join(dataDir(), relative);
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.renameSync(source, target);
-  return relative;
+    const source = draftFile(groupId, imageId);
+    if (!fs.existsSync(source)) {
+        throw notFound('Das Zettelbild ist nicht mehr da. Bitte scanne den Zettel noch einmal.');
+    }
+    const relative = path.join('images', String(groupId), `${imageId}.jpg`);
+    const target = path.join(dataDir(), relative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.renameSync(source, target);
+    return relative;
 }
 
 /** The stored image of a receipt. The path comes from the database, never from the request. */
 export function readReceiptImage(imagePath: string): Buffer {
-  const root = dataDir();
-  const file = path.resolve(root, imagePath);
-  if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) {
-    throw notFound('Dieses Zettelbild gibt es nicht.');
-  }
-  return fs.readFileSync(file);
+    const root = dataDir();
+    const file = path.resolve(root, imagePath);
+    if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) {
+        throw notFound('Dieses Zettelbild gibt es nicht.');
+    }
+    return fs.readFileSync(file);
 }
 
 /** Removes draft images of all groups that are older than a day. */
 export function removeOldDrafts(now = Date.now()): void {
-  const root = path.join(dataDir(), 'drafts');
-  let groups: string[];
-  try {
-    groups = fs.readdirSync(root);
-  } catch {
-    return;
-  }
-  for (const group of groups) {
-    const dir = path.join(root, group);
+    const root = path.join(dataDir(), 'drafts');
+    let groups: string[];
     try {
-      for (const name of fs.readdirSync(dir)) {
-        const file = path.join(dir, name);
-        if (now - fs.statSync(file).mtimeMs > DRAFT_LIFETIME_MS) fs.rmSync(file, { force: true });
-      }
+        groups = fs.readdirSync(root);
     } catch {
-      // A file vanished in between or the entry is not a folder: nothing to clean.
+        return;
     }
-  }
+    for (const group of groups) {
+        const dir = path.join(root, group);
+        try {
+            for (const name of fs.readdirSync(dir)) {
+                const file = path.join(dir, name);
+                if (now - fs.statSync(file).mtimeMs > DRAFT_LIFETIME_MS)
+                    fs.rmSync(file, { force: true });
+            }
+        } catch {
+            // A file vanished in between or the entry is not a folder: nothing to clean.
+        }
+    }
 }
