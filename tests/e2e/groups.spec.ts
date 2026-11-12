@@ -239,3 +239,21 @@ test.describe('Gruppeneinstellungen', () => {
         expect(shared?.title).toBe('Splitti – WG');
     });
 });
+
+test.describe('Titelleiste der Gruppenübersicht', () => {
+    let token: string;
+
+    test.beforeEach(async ({ page, request }) => {
+        ({ token } = await createGroup(request, 'WG', ['Samu', 'Karl']));
+        await page.goto(`/g/${token}`);
+        await page.getByRole('button', { name: 'Samu' }).click();
+        await expect(page.getByRole('heading', { name: 'WG' })).toBeVisible();
+    });
+
+    test('ein Zahnrad führt zu den Gruppeneinstellungen', async ({ page }) => {
+        const settings = page.getByRole('button', { name: 'Gruppeneinstellungen' });
+        await expect(settings.locator('svg.lucide-settings')).toBeVisible();
+        await settings.click();
+        await expect(page.getByRole('heading', { name: 'Gruppeneinstellungen' })).toBeVisible();
+    });
+});

@@ -104,3 +104,11 @@ Keine Lücken im Plan, sondern nachträgliche Vorgaben vom 13.11.2026. Sie stehe
 | 59 | Einrückung | 4 Leerzeichen statt 2 (Biome, `indentWidth`). Die Dateien, die Biome nicht abdeckt (Astro-Hülle, Manifest, `docker/entrypoint.sh`), folgen von Hand; YAML-Dateien und das Dockerfile bleiben bei 2. | Vorgabe. `compose.yaml` muss der Vorlage wörtlich entsprechen, und für YAML sind 2 Leerzeichen üblich. npm schreibt `package-lock.json` seitdem ebenfalls mit 4 Leerzeichen, weil es die Einrückung von `package.json` übernimmt. |
 | 60 | Wo liegen die Bausteine der Oberfläche? | Unter `src/components/`, eine Datei pro Komponente, ohne Sammeldatei für die Importe. Screens, Router und Gerätespeicher bleiben in `src/app/`; die Hilfsfunktionen zu Mitgliederlisten, die keine Komponenten sind, liegen in `src/app/members.ts`. | Vorgabe; `src/components` ist die Konvention von Astro. Screens sind Seiten der App, keine wiederverwendbaren Bausteine. |
 | 61 | Icons | Aus dem Paket `lucide-react` statt als eigene SVG-Pfade im Code. Das App-Icon bleibt die eigene Zeichnung (Nr. 57). | Vorgabe. Importiert wird pro Icon, ins Bündel kommen nur die benutzten. |
+
+## Rückmeldungen nach Version 0.1 (Issues #1 bis #8)
+
+Wünsche und Fehler aus dem ersten Ausprobieren, als Issues auf GitHub festgehalten. Wo die Umsetzung von den Wireframes abweicht oder etwas offen ließ, steht es hier.
+
+| Nr. | Frage | Entscheidung | Begründung |
+| --- | --- | --- | --- |
+| 62 | Icon für die Gruppeneinstellungen (#6) | Zahnrad statt Hamburger-Menü. | Der Knopf öffnet kein Menü, sondern die Einstellungen. Weicht vom Wireframe `gruppenuebersicht.html` ab. |

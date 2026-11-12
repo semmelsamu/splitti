@@ -1,6 +1,6 @@
 // Screen 4: the state of the group (wireframe gruppenuebersicht.html).
 
-import { MenuIcon } from 'lucide-react';
+import { SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -84,7 +84,7 @@ export function Overview() {
                         label="Gruppeneinstellungen"
                         onClick={() => navigate(`/g/${group.token}/einstellungen`)}
                     >
-                        <MenuIcon size={22} />
+                        <SettingsIcon size={22} />
                     </IconButton>
                 </>
             }
