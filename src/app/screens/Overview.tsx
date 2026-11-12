@@ -56,6 +56,9 @@ export function Overview() {
     return (
         <Screen
             title={group.name}
+            // One level up from a group are the groups of this device.
+            back="/"
+            backLabel="Zur Startseite"
             footer={
                 <div className="flex gap-2.5">
                     <Button

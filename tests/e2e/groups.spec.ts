@@ -250,6 +250,15 @@ test.describe('Titelleiste der Gruppenübersicht', () => {
         await expect(page.getByRole('heading', { name: 'WG' })).toBeVisible();
     });
 
+    test('der Pfeil führt zurück zur Startseite mit den Gruppen des Geräts', async ({ page }) => {
+        await page.getByRole('button', { name: 'Zur Startseite' }).click();
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.getByRole('heading', { name: 'Splitti' })).toBeVisible();
+        // The group is in the list and one tap away again.
+        await page.getByRole('button', { name: /^WG/ }).click();
+        await expect(page.getByRole('region', { name: 'Salden' })).toBeVisible();
+    });
+
     test('ein Zahnrad führt zu den Gruppeneinstellungen', async ({ page }) => {
         const settings = page.getByRole('button', { name: 'Gruppeneinstellungen' });
         await expect(settings.locator('svg.lucide-settings')).toBeVisible();

@@ -112,3 +112,4 @@ Wünsche und Fehler aus dem ersten Ausprobieren, als Issues auf GitHub festgehal
 | Nr. | Frage | Entscheidung | Begründung |
 | --- | --- | --- | --- |
 | 62 | Icon für die Gruppeneinstellungen (#6) | Zahnrad statt Hamburger-Menü. | Der Knopf öffnet kein Menü, sondern die Einstellungen. Weicht vom Wireframe `gruppenuebersicht.html` ab. |
+| 63 | Wie kommt man aus einer Gruppe zurück zur Startseite (#1)? | Die Gruppenübersicht bekommt links in der Titelleiste den Pfeil nach links, der auf allen Unterseiten „eine Ebene höher“ heißt; für Screenreader heißt er dort „Zur Startseite“. | Über einer Gruppe liegen die Gruppen des Geräts. Derselbe Pfeil an derselben Stelle braucht keine Erklärung; ein Home-Icon wäre ein zweites Zeichen für dasselbe. Weicht vom Wireframe `gruppenuebersicht.html` ab. |

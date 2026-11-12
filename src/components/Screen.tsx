@@ -13,6 +13,8 @@ interface ScreenProps {
     back?: string;
     /** Called instead of going to `back`, e.g. to ask before unsaved work is lost. */
     onBack?: () => void;
+    /** Name of the back button for screen readers, if it is not simply one level up. */
+    backLabel?: string;
     /** Buttons at the right end of the title bar. */
     actions?: ReactNode;
     /** Grey bar below the title, e.g. the receipt summary. */
@@ -28,6 +30,7 @@ export function Screen({
     title,
     back,
     onBack,
+    backLabel = 'Zurück',
     actions,
     banner,
     footer,
@@ -43,7 +46,10 @@ export function Screen({
                 }`}
             >
                 {back && (
-                    <IconButton label="Zurück" onClick={() => (onBack ? onBack() : navigate(back))}>
+                    <IconButton
+                        label={backLabel}
+                        onClick={() => (onBack ? onBack() : navigate(back))}
+                    >
                         <ChevronLeftIcon size={22} />
                     </IconButton>
                 )}
