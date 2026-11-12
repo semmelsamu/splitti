@@ -24,9 +24,11 @@ RUN npm ci --omit=dev --ignore-scripts
 # --- the image that runs on the home server --------------------------------
 FROM ${NODE_IMAGE} AS runtime
 
-# Text recognition runs locally in this container: Tesseract with the German language pack.
+# Text recognition runs locally in this container. The German language model
+# comes from the repo (tessdata/), not from the Debian package: Debian ships
+# the small "fast" model, which reads receipts noticeably worse.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-deu \
+  && apt-get install -y --no-install-recommends tesseract-ocr \
   && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production \
@@ -39,6 +41,7 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY package.json ./
 COPY drizzle ./drizzle
+COPY tessdata ./tessdata
 COPY scripts/start.mjs ./scripts/start.mjs
 COPY src/server/config.mjs ./src/server/config.mjs
 COPY docker/entrypoint.sh /usr/local/bin/splitti-entrypoint

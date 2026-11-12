@@ -39,7 +39,7 @@ Am Ende steht im README die Anleitung für Installation, Update, Sicherung und d
 
 ## Befehle
 
-Voraussetzungen für Entwicklung und Tests: Node.js ab 22.23 (im Container läuft Node 26) und Tesseract mit deutschem Sprachpaket (`tesseract-ocr`, `tesseract-ocr-deu` bzw. `tesseract-data-deu`). Einmalig: `npm install` und `npx playwright install chromium`.
+Voraussetzungen für Entwicklung und Tests: Node.js ab 22.23 (im Container läuft Node 26) und das Programm `tesseract` (Paket `tesseract-ocr` bzw. `tesseract`). Das deutsche Sprachmodell liegt im Repo unter `tessdata/`. Einmalig: `npm install` und `npx playwright install chromium`.
 
 | Zweck | Befehl |
 | --- | --- |
@@ -53,6 +53,7 @@ Voraussetzungen für Entwicklung und Tests: Node.js ab 22.23 (im Container läuf
 | Produktions-Build nach `dist/` | `npm run build` |
 | Build starten (Migrationen laufen zuerst) | `npm start` |
 | Neue Migration aus `src/server/db/schema.ts` erzeugen | `npm run db:generate -- --name <name>` |
+| Texterkennung an den drei Testfotos laufen lassen und `docs/OCR-BERICHT.md` schreiben | `npm run ocr:report` |
 | Container bauen und starten | `docker compose up -d --build` |
 
 Hinweise:

@@ -17,11 +17,12 @@ jobs:
           node-version: 26
           cache: npm
 
-      # The receipt tests run the real text recognition.
-      - name: Install Tesseract with the German language pack
+      # The receipt tests run the real text recognition. The German language
+      # model comes from the repo (tessdata/).
+      - name: Install Tesseract
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-deu
+          sudo apt-get install -y --no-install-recommends tesseract-ocr
 
       - run: npm ci
 
