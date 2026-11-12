@@ -1,0 +1,19 @@
+# dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# runtime data: SQLite database and receipt images (the backup is a copy of this folder)
+/data/*
+!/data/.gitkeep
+
+# test output
+test-results/
+playwright-report/
+.tmp/
+
+# editor and OS
+.DS_Store
+.vscode/
+.idea/
+*.log

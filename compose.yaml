@@ -1,0 +1,23 @@
+# Splitti: ein Container, Daten im Ordner ./data neben dieser Datei.
+# Installation und Update: docker compose up -d --build
+
+services:
+  splitti:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${SPLITTI_PORT:-3000}:3000"
+    volumes:
+      - ./data:/data
+
+    # --- Proxy-Netzwerk (Nginx Proxy Manager) -------------------------
+    # Zum Anbinden die zwei folgenden Zeilen einkommentieren
+    # und ganz unten den Namen des Proxy-Netzwerks eintragen.
+    # networks:
+    #   - proxy
+
+# networks:
+#   proxy:
+#     external: true
+#     name: HIER_NAME_DES_PROXY_NETZWERKS

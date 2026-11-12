@@ -39,4 +39,23 @@ Am Ende steht im README die Anleitung für Installation, Update, Sicherung und d
 
 ## Befehle
 
-Diesen Abschnitt nach Meilenstein 1 mit den echten Befehlen für Entwicklung, Tests, Lint und Build füllen.
+Voraussetzungen für Entwicklung und Tests: Node.js ab 22.23 (im Container läuft Node 26) und Tesseract mit deutschem Sprachpaket (`tesseract-ocr`, `tesseract-ocr-deu` bzw. `tesseract-data-deu`). Einmalig: `npm install` und `npx playwright install chromium`.
+
+| Zweck | Befehl |
+| --- | --- |
+| Entwicklungsserver (http://localhost:3000, Daten in `./data`) | `npm run dev` |
+| Lint und Formatprüfung (Biome) | `npm run lint` |
+| Format und sichere Lint-Korrekturen anwenden | `npm run format` |
+| Typprüfung (TypeScript strikt, inkl. Astro-Dateien) | `npm run check` |
+| Unit-Tests (Vitest: Rechenkern, Parser, Serverlogik) | `npm test` |
+| Browser-Tests (Playwright; baut vorher, eigener Port 4317, Daten in `.tmp/`) | `npm run test:e2e` |
+| Alles vor einem Commit | `npm run test:all` |
+| Produktions-Build nach `dist/` | `npm run build` |
+| Build starten (Migrationen laufen zuerst) | `npm start` |
+| Neue Migration aus `src/server/db/schema.ts` erzeugen | `npm run db:generate -- --name <name>` |
+| Container bauen und starten | `docker compose up -d --build` |
+
+Hinweise:
+
+- `npm run format` nur über die Quellordner laufen lassen (so ist Biome eingestellt); `docs/` und `tests/fixtures/` sind Vorgaben und bleiben unverändert.
+- Einzelner Unit-Test: `npx vitest run tests/unit/<datei>.test.ts`. Einzelner Browser-Test: `npx playwright test tests/e2e/<datei>.spec.ts` (vorher `npm run build`).

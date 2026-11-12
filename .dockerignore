@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+.astro
+data
+.tmp
+test-results
+playwright-report
+tests
+docs
+*.md
+.env
